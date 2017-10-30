@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="fragments/headTag :: headTag">
+</head>
+
+<body>
+	<!-- FLECHAS FINAL -->
+	<div class="row" id="pagination-control" th:fragment="paginadorPer">
+		<a class="pagination-arrow" title="" th:if="${not page.isLastPage}"
+			 onClick="paginadorFinal()"><img
+			th:attr="src=@{/resources/images/flechas-rw01.png}" /></a> <a
+			class="pagination-arrow" th:if="${page.isLastPage}"><img
+			th:attr="src=@{/resources/images/flechas-rw01.png}" /></a>
+	<!-- FLECHA AVANZA -->
+		<a class="pagination-arrow" title="" th:if="${not page.isLastPage}"
+			 onClick="paginadorAvanza()"><img
+			th:attr="src=@{/resources/images/flecha-der.png}" /></a> <a
+			class="pagination-arrow" th:if="${page.isLastPage}"><img
+			th:attr="src=@{/resources/images/flecha-der.png}" /></a>
+			<!-- PÁGINAS -->
+		<ul class="pagination">
+			<li th:each="item : ${page.items}"
+				th:class="${item.current}? 'active' : ''"><a
+				th:text="${item.number}"
+				th:href="@{${page.url}(index=${item.number})}">0</a></li>
+		</ul>
+			<!-- FLECHA RETROCEDE -->		
+		<a class="pagination-arrow" title="" th:if="${page.number} > 1"
+			onClick="paginadorRetrocede()"><img
+			th:attr="src=@{/resources/images/flecha-izq.png}" /></a> <a
+			class="pagination-arrow" th:if="${page.isFirstPage}"><img
+			th:attr="src=@{/resources/images/flecha-izq.png}" /></a>
+			
+			<!-- FLECHA INICIO -->
+			<a class="pagination-arrow" title="" th:if="${page.number} > 1"
+			onClick="paginadorInicio()"><img
+			th:attr="src=@{/resources/images/flechas-rw02.png}" /></a> <a
+			class="pagination-arrow" th:if="${page.isFirstPage}"><img
+			th:attr="src=@{/resources/images/flechas-rw02.png}" /></a>
+	</div>
+	
+	<div class="row" id="pagination-control" th:fragment="paginador">
+		<!-- lastPage -->
+		<a class="pagination-arrow pagination-control-lastpage" th:if="${not page.isLastPage}">
+			<img th:attr="src=@{/resources/images/flechas-rw01.png}"  title="Final"/></a>
+		<a class="pagination-arrow" th:if="${page.isLastPage}">
+			<img th:attr="src=@{/resources/images/flechas-rw01.png}" title="Final"/></a>
+		<!-- forward -->
+		<a class="pagination-arrow pagination-control-forward" th:if="${not page.isLastPage}">
+			<img th:attr="src=@{/resources/images/flecha-der.png}" title="Siguiente" /></a>
+		<a class="pagination-arrow" th:if="${page.isLastPage}">
+			<img th:attr="src=@{/resources/images/flecha-der.png}"  title="Siguiente" /></a>
+		<!-- pages -->
+		<ul class="pagination">
+			<li th:each="item : ${page.items}" th:class="${item.current}? 'active' : ''">
+				<a th:text="${item.number}" class="pagination-control-page">0</a>
+			</li>
+		</ul>
+		<!-- backward -->		
+		<a class="pagination-arrow pagination-control-backward"  th:if="${page.number} > 1">
+			<img th:attr="src=@{/resources/images/flecha-izq.png}"/></a>
+		<a class="pagination-arrow" title="" th:if="${page.isFirstPage}">
+			<img th:attr="src=@{/resources/images/flecha-izq.png}" title="Atras"/></a>
+		<!-- firtPage -->
+		<a class="pagination-arrow pagination-control-firstpage" th:if="${page.number} > 1">
+			<img th:attr="src=@{/resources/images/flechas-rw02.png}" /></a>
+		<a class="pagination-arrow" th:if="${page.isFirstPage}">
+			<img th:attr="src=@{/resources/images/flechas-rw02.png}"  title="Inicio" /></a>
+	</div>
+	
+</body>
+
+</html>

@@ -1,0 +1,23 @@
+.table-content{
+	margin-left: 20px;
+	margin-right: 20px;
+}
+
+.div-content-form{
+	margin-left: 60px;
+	margin-right: 60px;
+}
+
+.div-ali{
+	text-align: center;
+}
+
+.button-add{
+	margin-left: 20px;
+}
+
+.separator{
+	border-bottom-style: solid;
+	border-color: #000;
+	margin-bottom: 30px;
+}

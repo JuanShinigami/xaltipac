@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+
+
+
+<head th:replace="fragments/headTag :: headTag">
+
+
+
+</head>
+
+<script src="../../../resources/js/week/week.js"
+	th:src="@{/resources/js/week/week.js}"></script>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+	<nav th:replace="fragments/header :: header"></nav>
+	<!-- Navigation-Header -->
+	<div class="content-wrapper">
+		<!-- Contenido -->
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<br />
+			<ol class="breadcrumb">
+				<h5>SEMANAS DE OFRENDAS</h5>
+			</ol>
+		</div>
+		<br />
+		<div class="row no-gutters">
+			<!-- <div class="col-1 col-sm-1 col-md-1"></div> -->
+			<div class="col-12 col-sm-12 col-md-12 button-add">
+				<a sec:authorize="hasRole('addWeek')" class="btn btn-success"
+					th:href="@{/week/add}">Agregar Semana</a>
+			</div>
+		</div>
+		<br />
+
+		<!-- Notificaciones de usuario -->
+		<div class="alert alert-danger div-content-form" role="alert"
+			id="error-client" style="display: none;"></div>
+
+		<div class="alert alert-success div-content-form" id="success-server"
+			role="alert" th:if="${ESTATUS} != null">
+			<p th:text="${ESTATUS}"></p>
+		</div>
+
+		<table id="table-week" width="100%" class="table table-striped">
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>Día</th>
+					<th>Notas</th>
+					<th>Total</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="week : ${weeks}">
+					<td th:text="${week.id}"></td>
+					<td th:text="${week.day}"></td>
+					<td th:text="${week.notes}"></td>
+
+					<td th:text="${week.total}"></td>
+					<td><input type="button" id="delete"
+						sec:authorize="hasRole('editWeek')"
+						title="Modificar datos de la semana"
+						th:onclick="'editWeek(\'' + ${week.id} + '\')'"
+						class="btn btn-info" value="Editar" /> <input type="button"
+						id="delete" sec:authorize="hasRole('deleteWeek')"
+						title="Eliminar semana" class="btn btn-danger"
+						th:onclick="'showModalDelete(\''+${week.day}+'\')'"
+						value="Eliminar" />
+						<input type="button"
+						id="Ingresar ofrendas" title="Registrar ofrendas" class="btn btn-warning"
+						th:onclick="'registerOfferings(\''+${week.day}+'\')'"
+						value="Registrar" />
+						<input type="button"
+						id="Cerra Semana" title="Cerrar Semana" class="btn btn-success"
+						th:onclick="'showModalCloseWeek(\''+${week.day}+'\')'"
+						value="Cerrar Semana" />
+						<div class="modal fade" id="" tabindex="-1" role="dialog"
+							aria-labelledby="myModalLabel" aria-hidden="true"
+							th:attrappend="id='modal-delete-' + ${week.day}">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Eliminar
+											Semana</h5>
+										<button class="close" type="button" data-dismiss="modal"
+											aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<p
+											th:text="'¿Estás seguro de que deseas eliminar la semana de ofrenda del día ' + ${week.day} + '?'"></p>
+									</div>
+									<div class="modal-footer">
+
+										<form th:action="@{/week/delete}" method="post">
+
+											<input name="idWeek" type="hidden"
+												th:value="${week.id}" />
+											<button type="button" class="btn btn-danger"
+												data-dismiss="modal">Cancelar</button>
+											<button onclick="$(this).closest('form').submit();"
+												type="button" class="btn btn-primary">Aceptar</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div></td>
+					<form th:id="'edit-week-' + ${week.id} + '-form'" action=""
+						method="post"
+						th:action="@{'/week/' + ${week.id} + '/edit'}" />
+					<form th:id="'register-offering-' + ${week.day} + '-form'" action=""
+						method="post"
+						th:action="@{'/week/offeringDetails/' + ${week.id} + '/'}" />
+
+
+				</tr>
+			</tbody>
+
+		</table>
+		<br />
+
+		<footer th:replace="fragments/footer :: footer"></footer>
+
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#table-week').DataTable({
+				"sPaginationType" : "full_numbers",
+				"scrollX" : true,
+				"spageLength" : 10,
+				"sbPaginate" : true
+
+			});
+		});
+	</script>
+
+</body>
+
+</html>

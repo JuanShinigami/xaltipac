@@ -1,0 +1,8 @@
+INSERT INTO company (name_company, brand, rfc, website, company_isactive, name_bank, number_acount, interbank_clabe, sucursal_name, record_date, business, id_update_actions, progress_profile, cust_type, isprospect, ishost, interestingin, type_client) VALUES
+('Bimbo México S.A de C.V.', 'BIMBO', 'BIMBO2342015', 'bimbo.com', 1, 'BANCOMER', '1234567890', 'BIMBO1234567890', 'Estado de México', '2015-04-11', 'Productos', 0, 0, 0, 0, 1, NULL, 0),
+('Bimbo DF S.A de C.V.', 'BIMBO', 'BIMBO5642015', 'bimbo.com', 1, 'BANCOMER', '123685890', 'BIMBO0984567890', 'Ditrito Federal', '2015-04-11', 'Productos', 0, 0, 0, 0, 1, NULL, 0),
+('Bimbo Morelos S.A de C.V.', 'BIMBO', 'BIMBO2468015', 'bimbo.com', 1, 'BANCOMER', '187667890', 'BIMBO1234563782', 'Morelos', '2015-04-11', 'Productos', 0, 0, 0, 0, 1, NULL, 0),
+('Bimbo Campeche S.A de C.V.', 'BIMBO', 'BIMB87492015', 'bimbo.com', 1, 'BANCOMER', '1234839090', 'BIMBO1245667890', 'Campeche', '2015-04-11', 'Productos', 0, 0, 0, 0, 1, NULL, 0),
+('Bimbo Chiapas S.A de C.V.', 'BIMBO', 'BIMBO2342015', 'bimbo.com', 1, 'BANCOMER', '1234567890', 'BIMBO1234567890', 'Chiapas', '2015-04-11', 'Productos', 0, 0, 0, 0, 1, NULL, 0),
+('Bimbo Durango S.A de C.V.', 'BIMBO', 'BIMBO2342015', 'bimbo.com', 1, 'BANCOMER', '1234567890', 'BIMBO1234567890', 'Durango', '2015-04-11', 'Productos', 0, 0, 0, 0, 1, NULL, 0),
+('Bimbo Jalisco S.A de C.V.', 'BIMBO', 'BIMBO2342015', 'bimbo.com', 1, 'BANCOMER', '1234567890', 'BIMBO1234567890', 'Jalisco', '2015-04-11', 'Productos', 0, 0, 0, 0, 1, NULL, 0);

@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	metadata-complete="true"
+	version="2.5"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	
+	<display-name>xaltipac-admin</display-name>
+	<description>Administración de Finanzas y areas de la iglesia La Luz Del Mundo Col. Xaltipac</description>
+	
+	<context-param>
+		<param-name>spring.profiles.active</param-name>
+		<!-- <param-value>jdbc</param-value> -->
+		<!-- <param-value>jpa</param-value> -->
+		<param-value>spring-data-jpa</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>
+			classpath:/org/lldm/xaltipac/admin/multipart-config.xml,
+			classpath:/org/lldm/xaltipac/admin/mvc-core-config.xml,
+			classpath:/org/lldm/xaltipac/admin/integration-config.xml,
+			classpath:/org/lldm/xaltipac/admin/spring-security.xml
+		</param-value>
+	</context-param>
+	 
+	<filter>
+		<description>
+			Allows the application to accept multipart file data.
+		</description>
+		<display-name>multipartFilter</display-name>
+		<filter-name>multipartFilter</filter-name>
+		<filter-class>org.springframework.web.multipart.support.MultipartFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>multipartFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter>
+		<description>
+			Used so we can use forms of method type PUT and DELETE.
+		</description>
+		<display-name>httpMethodFilter</display-name>
+		<filter-name>httpMethodFilter</filter-name>
+		<filter-class>org.springframework.web.filter.HiddenHttpMethodFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>httpMethodFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	
+	<filter>
+		<description>
+			Secures access to web resources using the Spring Security framework.
+		</description>
+		<display-name>springSecurityFilterChain</display-name>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>ERROR</dispatcher>
+		<dispatcher>FORWARD</dispatcher>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	
+	<filter>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	
+	<locale-encoding-mapping-list>
+		<locale-encoding-mapping>
+			<locale>es</locale>
+			<encoding>UTF-8</encoding>
+		</locale-encoding-mapping>
+	</locale-encoding-mapping-list>
+    
+	<filter-mapping>
+		<filter-name>CharacterEncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	 
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+	<listener>
+		<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+	</listener>
+	 
+	<servlet>
+		<servlet-name>xaltipac</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:/org/lldm/xaltipac/admin/mvc-core-config.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+    <servlet-mapping>
+        <servlet-name>xaltipac</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+    <error-page>
+    	<error-code>404</error-code>
+    	<location>/notFound</location>
+	</error-page>
+
+</web-app>
+	
+	
+	
+
+	
+	

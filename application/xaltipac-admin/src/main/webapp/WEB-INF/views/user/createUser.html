@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head th:replace="fragments/headTag :: headTag">
+
+
+</head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<script src="../../../resources/js/users/users.js"
+	th:src="@{/resources/js/users/users.js}"></script>
+
+
+<!-- BootstrapValidator CSS -->
+
+<body class="fixed-nav sticky-footer" id="page-top">
+	<nav th:replace="fragments/header :: header"></nav>
+	<!-- Navigation-Header -->
+	<div class="content-wrapper">
+
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<br />
+			<ol class="breadcrumb">
+				<h5>AGREGAR USUARIO</h5>
+			</ol>
+		</div>
+
+		<div class="row no-gutters">
+			<div class="col-7 col-sm-9 col-md-10"></div>
+			<div class="col-5 col-sm-3 col-md-2">
+				<small>(*) Campos requeridos.</small>
+			</div>
+		</div>
+
+		<div class="div-content-form">
+			<form id="addUser-form" action="" th:object="${userForm}"
+				method="post" th:action="@{/usuario/agregar}">
+				<input type="hidden" id="userDetailsId" name="userDetailsId"
+					th:value="${userForm.userDetailsId}" />
+
+				<!-- Notificaciones de usuario -->
+				<div class="alert alert-danger" id="error-server" role="alert"
+					th:if="${#fields.hasErrors('*')}">
+					<p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>
+				</div>
+
+				<div class="alert alert-success" id="success-server" role="alert"
+					th:if="${ESTATUS} != null">
+					<p th:text="${ESTATUS}"></p>
+				</div>
+
+				<div class="alert alert-danger" role="alert" id="error-client"
+					style="display: none;"></div>
+
+				<div class="row">
+
+					<div class="col-12 col-sm-12 col-md-12">
+						<h5>Datos personales</h5>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 separator"></div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('name')}? 'has-error'">
+							<label for="name">(*) Nombre:</label> <input type="text"
+								class="form-control" maxlength="50" th:field="*{name}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('fatherLastName')}? 'has-error'">
+							<label for="fatherLastName">(*) Apellido Paterno:</label> <input
+								type="text" class="form-control" maxlength="50"
+								th:field="*{fatherLastName}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('motherLastName')}? 'has-error'">
+							<label for="motherLastName">(*) Apellido Materno:</label> <input
+								type="text" class="form-control" maxlength="50"
+								th:field="*{motherLastName}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('email')}? 'has-error'">
+							<label for="email">Correo Electrónico:</label> <input
+								type="email" class="form-control" maxlength="100"
+								th:field="*{email}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('phone')}? 'has-error'">
+							<label for="phone">Teléfono:</label> <input type="text"
+								class="form-control" maxlength="100" th:field="*{phone}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-6 col-md-3">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('birthdate')}? 'has-error'">
+							<label for="birthdate">(*) Fecha de nacimiento:</label> <input
+								type="date" class="form-control" maxlength="100"
+								th:field="*{birthdate}" />
+						</div>
+					</div>
+					<div class="form-group" style="display: none;"
+							th:classappend="${#fields.hasErrors('gender')}? 'has-error'">
+							<label for="gender">(*) Fecha de nacimiento:</label> <input
+								type="text" class="form-control" maxlength="100"
+								th:field="*{gender}" />
+						</div>
+					
+					<div class="col-12 col-sm-6 col-md-3">
+						<div class="form-group">
+							<label for="gender">(*) Genero:</label><select
+								class="form-control" id="optionGender">
+								<option value="0">Selecciona...</option>
+								<option value="H">Hombre</option>
+								<option value="M">Mujer</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('profileId')}? 'has-error'">
+							<label for="profileId">(*) Perfil:</label> <select
+								class="form-control" style="width: 100%;" id="optionProfiles"
+								th:field="*{profileId}">
+								<option value="0">Selecciona...</option>
+								<option th:each="profile : ${profiles}" th:value="${profile.id}"
+									th:field="*{profileId}" th:text="${profile.name}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('groupId')}? 'has-error'">
+							<label for="groupId">(*) Grupo:</label> <select
+								class="form-control" style="width: 100%;" id="optionGroups"
+								th:field="*{groupId}">
+								<option value="0">Selecciona...</option>
+								<option th:each="group : ${groups}" th:value="${group.id}"
+									th:field="*{groupId}" th:text="${group.name}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-12">
+						<div class="form-check">
+							<label for="active" class="form-check-label"> <input
+								type="hidden" maxlength="100" th:field="*{active}" /> <input
+								type="checkbox" class="form-check-input" id="isActive" />¿Es
+								activo?
+							</label>
+						</div>
+					</div>
+					<br /> <br /> <br />
+					<div class="col-12 col-sm-12 col-md-12">
+						<h5>Dirección</h5>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 separator"></div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('street')}? 'has-error'">
+							<label for="street">(*) Calle:</label> <input type="text"
+								class="form-control" maxlength="100" th:field="*{street}" />
+						</div>
+					</div>
+
+
+					<div class="col-12 col-sm-6 col-md-3">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('nExterior')}? 'has-error'">
+							<label for="nExterior">(*) No. Exterior:</label> <input
+								type="number" class="form-control" maxlength="100"
+								th:field="*{nExterior}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-6 col-md-3">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('nInside')}? 'has-error'">
+							<label for="nInside">(*) No. Interior:</label> <input
+								type="number" class="form-control" maxlength="100"
+								th:field="*{nInside}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('statesOfMexicoId')}? 'has-error'">
+							<label for="statesOfMexicoId">(*) Estado:</label> <select
+								class="form-control" style="width: 100%;"
+								id="optionStates" th:field="*{statesOfMexicoId}">
+								<option value="0">Selecciona...</option>
+								<option th:each="state : ${states}" th:value="${state.id}"
+									th:text="${state.state}"></option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('districtId')}? 'has-error'">
+							<label for="districtId">(*) Municipio:</label> <select
+								class="form-control" style="width: 100%;"
+								id="optionDistricts" th:field="*{districtId}">
+								<option value="0">Selecciona...</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-6">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('neighborhoodId')}? 'has-error'">
+							<label for="neighborhoodId">(*) Colonia o Barrio:</label> <select
+								class="form-control" style="width: 100%;"
+								id="optionNeighborhood" th:field="*{neighborhoodId}">
+								<option value="0">Selecciona...</option>
+							</select>
+						</div>
+					</div>
+
+					<br /> <br /> <br /> <br /> <br />
+					<div class="col-12 col-sm-12 col-md-12">
+						<h5>Cuenta</h5>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 separator"></div>
+
+					<div class="col-12 col-sm-12 col-md-5">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('identifier')}? 'has-error'">
+							<label for="identifier">(*) Usuario:</label> <input type="text"
+								class="form-control" maxlength="100" th:field="*{identifier}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-12 col-md-5">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('password')}? 'has-error'">
+							<label for="password">(*) Contraseña:</label> <input
+								type="password" class="form-control" maxlength="100"
+								th:field="*{password}" />
+						</div>
+					</div>
+
+					<div class="col-12 col-sm-4 col-md-2">
+						<br /> <a href="javascript:{}" onclick="javascript:genereted();"
+							id="cat-save" class="btn btn-success"
+							title="Genera el usuario y contraseña.">Generar</a>
+					</div>
+
+				</div>
+			</form>
+
+			<form id="search-district-form" action="" method="POST"
+				th:action="@{/usuario/searchDistrict}">
+				<input type="hidden" name="newstate" id="newstate" value="" />
+			</form>
+
+			<form id="search-neighborhood-form" action="" method="POST"
+				th:action="@{/usuario/searchNeighborhood}">
+				<input type="hidden" name="newdistrict" id="newdistrict" value="" />
+			</form>
+
+
+		</div>
+		<br /> <br />
+		<div class="row justify-content-center div-ali">
+
+			<div class="col-4">
+				<a th:href="@{/usuario}" class="btn btn-danger">CANCELAR</a>
+			</div>
+			<div class="col-4">
+				<a href="javascript:{}" onclick="javascript:addUser();"
+					id="cat-save" class="btn btn-primary">GUARDAR</a>
+			</div>
+		</div>
+		<br />
+		<footer th:replace="fragments/footer :: footer"></footer>
+	</div>
+</body>
+
+</html>

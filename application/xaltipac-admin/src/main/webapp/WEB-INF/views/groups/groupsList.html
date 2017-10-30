@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="fragments/headTag :: headTag">
+</head>
+
+<script src="group.js" th:src="@{/resources/js/group/group.js}"></script>
+
+<link href="../../../resources/css/botstrap.validator.css"
+	th:href="@{/resources/css/bootstrapValidator.min.css}" rel="stylesheet" />
+<body class="fixed-nav sticky-footer" id="page-top">
+	<nav th:replace="fragments/header :: header"></nav>
+	<!-- Navigation-Header -->
+	<div class="content-wrapper">
+		<!-- Contenido -->
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<br />
+			<ol class="breadcrumb">
+				<h5>GRUPOS</h5>
+			</ol>
+		</div>
+		<br />
+		<div class="row no-gutters">
+			<!-- <div class="col-1 col-sm-1 col-md-1"></div> -->
+			<div class="col-12 col-sm-12 col-md-12 button-add">
+				<a sec:authorize="hasRole('addGroup')" href="javascript:{}" onclick="javascript:showModalAdd();"
+						id="cat-save" class="btn btn-success">Agregar Grupo</a>
+				<!-- <button sec:authorize="hasRole('addGroup')" type="button"
+					class="btn btn-success" data-toggle="modal"
+					data-target="#exampleModal1">Agregar Grupo</button> -->
+				<!-- <a  class="btn btn-success"
+					th:href="@{/groups/add}">Agregar Grupo</a> -->
+			</div>
+		</div>
+		<br />
+
+		<!-- Notificaciones de usuario -->
+		<div class="alert alert-danger div-content-form" role="alert"
+			id="error-client" style="display: none;"></div>
+
+		<div class="alert alert-success div-content-form" id="success-server"
+			role="alert" th:if="${ESTATUS} != null">
+			<p th:text="${ESTATUS}"></p>
+		</div>
+
+		<table id="table-groups" width="100%" class="table table-striped">
+			<thead>
+				<tr>
+					<th>No.</th>
+					<th>Nombre</th>
+					<th>Fecha de modificación</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="group : ${groupList}">
+					<td th:text="${group.id}"></td>
+					<td th:text="${group.name}"></td>
+					<td th:text="${group.lastModified}"></td>
+					<td>
+					<button id="delete" sec:authorize="hasRole('editGroup')" class="btn btn-primary" th:onclick="'editGroup(\'' + ${group.id} + '\',\'' + ${group.name} + '\')'">Editar</button>
+					<!-- <input type="button"  title="Modificar datos del grupo"
+						 value="Editar" /> --> 
+					
+					<input type="button"
+						id="delete" sec:authorize="hasRole('deleteGroup')"
+						title="Eliminar grupo" class="btn btn-danger"
+						th:onclick="'showModalDelete(\''+${group.name}+'\')'"
+						value="Eliminar" />
+
+						<div class="modal fade" id="" tabindex="-1" role="dialog"
+							aria-labelledby="myModalLabel" aria-hidden="true"
+							th:attrappend="id='modal-delete-' + ${group.name}">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<div class="modal-header">
+										<h5 class="modal-title" id="exampleModalLabel">Eliminar
+											Grupo</h5>
+										<button class="close" type="button" data-dismiss="modal"
+											aria-label="Close">
+											<span aria-hidden="true">×</span>
+										</button>
+									</div>
+									<div class="modal-body">
+										<p
+											th:text="'¿Estás seguro de que deseas eliminar el grupo de ' + ${group.name} + '?'"></p>
+									</div>
+									<div class="modal-footer">
+
+										<form th:action="@{/groups/delete}" method="post">
+
+											<input name="idGroup" type="hidden" th:value="${group.id}" />
+											<button type="button" class="btn btn-danger"
+												data-dismiss="modal">Cancelar</button>
+											<button onclick="$(this).closest('form').submit();"
+												type="button" class="btn btn-primary">Aceptar</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div></td>
+					<form th:id="'edit-group-' + ${group.id} + '-form'" action=""
+						method="post" th:action="@{'/groups/' + ${group.id} + '/edit'}" />
+
+				</tr>
+			</tbody>
+		</table>
+		<br />
+		<footer th:replace="fragments/footer :: footer"></footer>
+	</div>
+
+	<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel1"></h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<!-- <div class="alert alert-success" id="success-server-modal"
+						role="alert" th:if="${ESTATUSMODAL} != null">
+						<p th:text="${ESTATUSMODAL}"></p>
+					</div> -->
+
+					<!-- <div class="alert alert-danger" role="alert"
+						id="error-client-modal" style="display: none;"></div> -->
+
+					<small>(*) Lo campos requeridos.</small> <br /> <br />
+					<form id="add-group-form" action=""
+						method="post" th:action="@{/groups/add}">
+						<input type="hidden" name="id" id="id" th:value="${id}" />
+						<div class="form-group">
+							<label for="name">(*) Nombre:</label>
+							<input class="form-control" type="text" maxlength="25" id="name" name="name" th:value="${name}" />
+						</div>
+												
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+					<a href="javascript:{}" onclick="javascript:addGroup();"
+						id="cat-save" class="btn btn-primary">Guardar</a>
+<!-- 					<button type="button" class="btn btn-primary">Guardar</button> -->
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#table-groups').DataTable({
+				"sPaginationType" : "full_numbers",
+				"scrollX" : true,
+				"spageLength" : 10,
+				"sbPaginate" : true
+
+			});
+		});
+	</script>
+</body>
+
+</html>

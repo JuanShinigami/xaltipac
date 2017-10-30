@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+
+
+
+<head th:replace="fragments/headTag :: headTag">
+
+
+
+</head>
+
+<script src="../../../resources/js/offeringDetails/offeringDetails.js"
+	th:src="@{/resources/js/offeringDetails/offeringDetails.js}"></script>
+
+<body class="fixed-nav sticky-footer" id="page-top">
+	<nav th:replace="fragments/header :: header"></nav>
+	<!-- Navigation-Header -->
+	<div class="content-wrapper">
+		<!-- Contenido -->
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<br />
+			<ol class="breadcrumb">
+				<h5>BUSCAR MIEMBRO</h5>
+			</ol>
+		</div>
+		<br />
+		<!-- 		<div class="row no-gutters"> -->
+		<!-- 			<div class="col-1 col-sm-1 col-md-1"></div> -->
+		<!-- 			<div class="col-12 col-sm-12 col-md-12 button-add"> -->
+		<!-- 				<a sec:authorize="hasRole('addWeek')" class="btn btn-success" -->
+		<!-- 					th:href="@{/week/add}">Agregar Semana</a> -->
+		<!-- 			</div> -->
+		<!-- 		</div> -->
+		<!-- 		<br /> -->
+
+		<!-- Notificaciones de usuario -->
+		<!-- 		<div class="alert alert-danger div-content-form" role="alert" -->
+		<!-- 			id="error-client" style="display: none;"></div> -->
+
+		<!-- 		<div class="alert alert-success div-content-form" id="success-server" -->
+		<!-- 			role="alert" th:if="${ESTATUS} != null"> -->
+		<!-- 			<p th:text="${ESTATUS}"></p> -->
+		<!-- 		</div> -->
+		<input type="hidden" class="form-control" id="weekId" name="weekId"
+			th:value="${week.id}" />
+
+		<table id="table-user" width="100%" class="table table-striped">
+			<thead>
+				<tr>
+					<th>Miembro</th>
+					<th>Acciones</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user : ${userList}">
+					<td
+						th:text="${user.name} + ' ' + ${user.lastName} + ' ' + ${user.lastNameMaternal}"></td>
+					<td><input type="button" id="buscar oferndas"
+						sec:authorize="hasRole('showOfferingDetails')"
+						title="Agregar ofrendas"
+						th:onclick="'searchOffering(\'' + ${user.id} + '\',\'' + ${user.name} + '\', \'' + ${user.lastName} + '\', \'' + ${user.lastNameMaternal} + '\')'"
+						class="btn btn-info" value="Registrar Ofrendas" /> <!-- 						<div class="modal fade" id="" tabindex="-1" role="dialog" -->
+						<!-- 							aria-labelledby="myModalLabel" aria-hidden="true" -->
+						<!-- 							th:attrappend="id='modal-delete-' + ${week.day}"> -->
+						<!-- 							<div class="modal-dialog"> --> <!-- 								<div class="modal-content"> -->
+						<!-- 									<div class="modal-header"> --> <!-- 										<h5 class="modal-title" id="exampleModalLabel">Eliminar -->
+						<!-- 											Semana</h5> --> <!-- 										<button class="close" type="button" data-dismiss="modal" -->
+						<!-- 											aria-label="Close"> --> <!-- 											<span aria-hidden="true">×</span> -->
+						<!-- 										</button> --> <!-- 									</div> --> <!-- 									<div class="modal-body"> -->
+						<!-- 										<p --> <!-- 											th:text="'¿Estás seguro de que deseas eliminar la semana de ofrenda del día ' + ${week.day} + '?'"></p> -->
+						<!-- 									</div> --> <!-- 									<div class="modal-footer"> -->
+
+						<!-- 										<form th:action="@{/week/delete}" method="post"> -->
+
+						<!-- 											<input name="idWeek" type="hidden" --> <!-- 												th:value="${week.id}" /> -->
+						<!-- 											<button type="button" class="btn btn-danger" --> <!-- 												data-dismiss="modal">Cancelar</button> -->
+						<!-- 											<button onclick="$(this).closest('form').submit();" -->
+						<!-- 												type="button" class="btn btn-primary">Aceptar</button> -->
+						<!-- 										</form> --> <!-- 									</div> --> <!-- 								</div> -->
+						<!-- 							</div> --></td>
+
+
+
+				</tr>
+			</tbody>
+
+		</table>
+		<br />
+		<form id="search-offering-form" action=""
+			th:action="@{'/week/offeringDetails/searchOfferingByWeekAndUser'}"
+			method="post">
+			<input id="idWeek" name="idWeek" type="hidden" /> <input id="idUser"
+				name="idUser" type="hidden" />
+		</form>
+
+		<div class="modal fade" id="modal-edit-offeringDetails" tabindex="-1"
+			role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Registro de
+							ofrendas</h5>
+						<button class="close" type="button" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<ol class="breadcrumb">
+							<h5 id="titleModalOffering" />
+						</ol>
+						<form id="edit-offering-details-form" action=""
+							th:action="@{'/week/offeringDetails/editOfferingDetails'}"
+							method="post">
+							<input id="contentIndices" name="contentIndices" type="hidden" />
+							<div id="contentOffering"></div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+						<a href="javascript:{}" onclick="javascript:addOfferingDetails();"
+							id="cat-save" class="btn btn-primary">Guardar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<footer th:replace="fragments/footer :: footer"></footer>
+
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$('#table-user').DataTable({
+				"sPaginationType" : "full_numbers",
+				"scrollX" : true,
+				"spageLength" : 10,
+				"sbPaginate" : true
+
+			});
+		});
+	</script>
+
+</body>
+
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="fragments/headTag :: headTag">
+
+</head>
+<script src="../../../resources/js/week/week.js"
+	th:src="@{/resources/js/week/week.js}"></script>
+
+<script type="text/javascript">
+	function enableDisableAll(flag) {
+		$('input[type=checkbox]').each(function() {
+			$(this).prop('checked', flag);
+		});
+
+	}
+</script>
+<!-- BootstrapValidator CSS -->
+<link href="../../../resources/css/botstrap.validator.css"
+	th:href="@{/resources/css/bootstrapValidator.min.css}" rel="stylesheet" />
+
+<body class="fixed-nav sticky-footer" id="page-top">
+	<nav th:replace="fragments/header :: header"></nav>
+	<!-- Navigation-Header -->
+	<div class="content-wrapper">
+
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<br />
+			<ol class="breadcrumb">
+				<h5>AGREGAR SEMANA DE OFRENDA</h5>
+			</ol>
+		</div>
+
+		<div class="row no-gutters">
+			<div class="col-7 col-sm-9 col-md-10"></div>
+			<div class="col-5 col-sm-3 col-md-2">
+				<small>(*) Campos requeridos.</small>
+			</div>
+		</div>
+
+		<div class="div-content-form">
+			<form id="add-week-form" action="" th:object="${weekForm}"
+				method="post" th:action="@{/week/add}">
+
+
+				<!-- Notificaciones de usuario -->
+				<div class="alert alert-danger" id="error-server" role="alert"
+					th:if="${#fields.hasErrors('*')}">
+					<p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>
+				</div>
+
+				<div class="alert alert-success" id="success-server" role="alert"
+					th:if="${ESTATUS} != null">
+					<p th:text="${ESTATUS}"></p>
+				</div>
+
+				<div class="alert alert-danger" role="alert" id="error-client"
+					style="display: none;"></div>
+
+				<div class="row">
+					<div class="col-12 col-sm-12 col-md-12">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('day')}? 'has-error'">
+
+							<label for="day">(*) Fecha:</label> <input type="date"
+								class="form-control" th:field="*{day}" />
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('notes')}? 'has-error'">
+							<label for="notes">Notas:</label> <textarea
+								class="form-control" maxlength="1000" th:field="*{notes}" ></textarea>
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12">
+						 <input type="button" id="check-all" value="Activar Todas"
+							onclick=" enableDisableAll(true)" class="btn btn-success" /> <input
+							type="button" id="check-all" value="Desactivar Todas"
+							onclick=" enableDisableAll(false)" class="btn btn-danger" /> <br /><br />
+
+						<table class="table table-hover table-striped">
+							<tr
+								th:each="offeringDetailsOffering,offeringDetailsOfferingCount : ${weekForm.offeringDetilsOfferingList}">
+
+								<td th:title="${offeringDetailsOffering.offering.name}"><input
+									type="hidden"
+									th:field="*{offeringDetilsOfferingList[__${offeringDetailsOfferingCount.index}__].offering.name}"
+									value="${offeringDetilsOfferingList[__${offeringDetailsOfferingCount.index}__].offering.name}" />
+									<input type="hidden"
+									th:field="*{offeringDetilsOfferingList[__${offeringDetailsOfferingCount.index}__].offering.id}"
+									value="${offeringDetilsOfferingList[__${offeringDetailsOfferingCount.index}__].offering.id}" />
+									<input type="hidden"
+									th:field="*{offeringDetilsOfferingList[__${offeringDetailsOfferingCount.index}__].offering.name}"
+									value="${offeringDetilsOfferingList[__${offeringDetailsOfferingCount.index}__].offering.name}" />
+
+									<input type="checkbox"
+									th:id="CHECK- + ${offeringDetailsOffering.offering.id}"
+									th:field="*{offeringDetilsOfferingList[__${offeringDetailsOfferingCount.index}__].active}"
+									th:value="${offeringDetailsOffering.offering.name}"
+									th:onclick="'activeView(\''+${offeringDetailsOffering.offering.name}+'\')'" />
+									<label th:for="${offeringDetailsOffering.offering.name}"
+									th:text="${offeringDetailsOffering.offering.name}"></label></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<br /> <br />
+		<div class="row justify-content-center div-ali">
+
+			<div class="col-4">
+				<a th:href="@{/week}" class="btn btn-danger">CANCELAR</a>
+			</div>
+			<div class="col-4">
+				<a href="javascript:{}" onclick="javascript:addWeek();"
+					id="cat-save" class="btn btn-primary">GUARDAR</a>
+			</div>
+		</div>
+		<footer th:replace="fragments/footer :: footer"></footer>
+
+		<br /> <br />
+	</div>
+
+</body>
+
+</html>

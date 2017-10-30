@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="fragments/headTag :: headTag">
+</head>
+
+<body>
+	<!-- Wrapper-Container -->
+		<div id="wrapper">
+				<!-- Navigation-Header -->
+			    	<nav th:replace="fragments/header :: header"></nav>
+			    <!-- Navigation-Header -->
+			    
+			    <!-- Area Section -->
+			    <section class="success" id="about">
+    <h2>Candys :p</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th style="width: 150px;">Name</th>
+                <th style="width: 200px;">Giro</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="candy : ${candys}">
+                <td th:text="${candy.name}"></td>
+                <td th:text="${candy.enabled}"></td>
+            </tr>
+        </tbody>
+    </table>    
+    
+    <a th:href="@{'/addCandy'}" href="addCandy.html">Add Candy</a>
+
+			    </section>
+			    
+			    <!-- Footer -->
+			    	<footer th:replace="fragments/footer :: footer"></footer>
+			    <!-- Footer -->
+		</div>
+	<!-- Wrapper-Container -->
+</body>
+
+</html>

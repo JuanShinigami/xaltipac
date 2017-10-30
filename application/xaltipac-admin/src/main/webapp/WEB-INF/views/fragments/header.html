@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head th:replace="fragments/headTag :: headTag"></head>
+
+<body>
+	<!-- Navigation-->
+	<div id="header" th:fragment="header">
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+			id="mainNav" th:if="${isLogin == null}">
+			<a class="navbar-brand" th:href="@{/}">LLDM Xaltipac</a>
+			<button class="navbar-toggler navbar-toggler-right" type="button"
+				data-toggle="collapse" data-target="#navbarResponsive"
+				aria-controls="navbarResponsive" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarResponsive">
+				<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+					<li class="nav-item" data-toggle="tooltip" data-placement="right"
+						title="Dashboard"><a href="../" th:href="@{/}"
+						class="nav-link"> <i class="fa fa-fw fa-dashboard"></i> <span
+							class="nav-link-text">Inicio</span>
+					</a></li>
+					<li sec:authorize="hasRole('showUsers')" class="nav-item"
+						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
+						href="../usuario/" th:href="@{/usuario}" class="nav-link"> <i
+							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Usuarios</span>
+					</a></li>
+					<li sec:authorize="hasRole('showProfiles')" class="nav-item"
+						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
+						href="../perfil/" th:href="@{/perfil}" class="nav-link"> <i
+							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Perfiles</span>
+					</a></li>
+					<li sec:authorize="hasRole('showResources')" class="nav-item"
+						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
+						href="../recurso/" th:href="@{/recurso}" class="nav-link"><i
+							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Recursos</span>
+					</a></li>
+					<li sec:authorize="hasRole('showGroups')" class="nav-item"
+						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
+						href="../groups/" th:href="@{/groups}" class="nav-link"><i
+							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Grupos</span>
+					</a></li>
+					<!-- 					<li sec:authorize="hasRole('showOfferings')" class="nav-item" -->
+					<!-- 						data-toggle="tooltip" data-placement="right" title="Dashboard"><a -->
+					<!-- 						href="../offering/" th:href="@{/offering}" class="nav-link"><i -->
+					<!-- 							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Tipos de Ofrendas</span> -->
+					<!-- 					</a></li> -->
+					<li sec:authorize="hasRole('showWeeks')" class="nav-item" data-toggle="tooltip" data-placement="right"
+						title="Ofrendas"><a
+						class="nav-link nav-link-collapse collapsed"
+						data-toggle="collapse" href="#collapseMulti"
+						data-parent="#exampleAccordion"> <i
+							class="fa fa-fw fa-sitemap"></i> <span class="nav-link-text">Ofrendas</span>
+					</a>
+						<ul class="sidenav-second-level collapse" id="collapseMulti">
+							<li sec:authorize="hasRole('showOfferings')" title="Dashboard"><a href="../offering/" th:href="@{/offering}">Tipos de Ofrendas</a></li>
+							<li sec:authorize="hasRole('showWeeks')" title="Dashboard"><a href="../week/" th:href="@{/week}">Ofenda semanal</a></li>
+						</ul></li>
+				</ul>
+				<ul class="navbar-nav sidenav-toggler">
+					<li class="nav-item"><a class="nav-link text-center"
+						id="sidenavToggler"> <i class="fa fa-fw fa-angle-left"></i>
+					</a></li>
+				</ul>
+				<ul class="navbar-nav ml-auto">
+					<li class="nav-item"><a class="nav-link" data-toggle="modal"
+						data-target="#exampleModal"> <i class="fa fa-fw fa-sign-out"></i>Cerrar
+							Sesión
+					</a></li>
+				</ul>
+			</div>
+		</nav>
+		<form style="visibility: hidden" id="formLogout" method="post"
+			action="#" th:action="@{/logout}"></form>
+		<!-- Logout Modal-->
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Aviso</h5>
+						<button class="close" type="button" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">¿Está que desea cerrar sesión?</div>
+					<div class="modal-footer">
+						<button class="btn btn-primary" type="button" data-dismiss="modal">No</button>
+						<a th:if="${isLogin == null}" href="/" th:href="@{#}"
+							onclick="$('#formLogout').submit();" class="btn btn-warning">Si</a>
+						<!-- 							<a th:if="${isLogin == null}" id="logoutt" class="btn btn-warning">Si</a> -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>

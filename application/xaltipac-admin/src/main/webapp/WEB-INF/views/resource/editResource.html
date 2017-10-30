@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head th:replace="fragments/headTag :: headTag">
+
+</head>
+<script src="recursos.js" th:src="@{/resources/js/recursos/recursos.js}"></script>
+
+<!-- BootstrapValidator CSS -->
+<link href="../../../resources/css/botstrap.validator.css"
+	th:href="@{/resources/css/bootstrapValidator.min.css}" rel="stylesheet" />
+
+<body class="fixed-nav sticky-footer" id="page-top">
+	<nav th:replace="fragments/header :: header"></nav>
+	<!-- Navigation-Header -->
+	<div class="content-wrapper">
+
+		<div class="container-fluid">
+			<!-- Breadcrumbs-->
+			<br />
+			<ol class="breadcrumb">
+				<h5>EDITAR RECURSO</h5>
+			</ol>
+
+
+
+		</div>
+
+		<div class="row no-gutters">
+			<div class="col-7 col-sm-9 col-md-10"></div>
+			<div class="col-5 col-sm-3 col-md-2">
+				<small>(*) Campos requeridos.</small>
+			</div>
+		</div>
+		
+		<div class="div-content-form">
+			<form id="addResource-form" action="" th:object="${resourceForm}"
+				method="post" th:action="@{/recurso/agregar}">
+				<input type="hidden" name="id" th:value="${resourceForm.id}" />
+
+				<!-- Notificaciones de usuario -->
+				<div class="alert alert-danger" id="error-server" role="alert"
+					th:if="${#fields.hasErrors('*')}">
+					<p th:each="err : ${#fields.allErrors()}" th:text="${err}">...</p>
+				</div>
+
+				<div class="alert alert-success" id="success-server" role="alert"
+					th:if="${ESTATUS} != null">
+					<p th:text="${ESTATUS}"></p>
+				</div>
+
+				<div class="alert alert-danger" role="alert" id="error-client"
+					style="display: none;"></div>
+
+				<div class="row">
+					<div class="col-12 col-sm-12 col-md-12">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('name')}? 'has-error'">
+
+							<label for="name">(*) Nombre:</label> <input type="text"
+								class="form-control" maxlength="16" th:field="*{name}" />
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12">
+						<div class="form-group"
+							th:classappend="${#fields.hasErrors('path')}? 'has-error'">
+							<label for="path">(*) Ruta:</label> <input type="text"
+								class="form-control" maxlength="16" th:field="*{path}" />
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		<br /> <br />
+		<div class="row justify-content-center div-ali">
+			
+				<div class="col-4">
+					<a th:href="@{/recurso}" class="btn btn-danger">CANCELAR</a>
+				</div>
+				<div class="col-4">
+					<a href="javascript:{}" onclick="javascript:addResource();"
+						id="cat-save" class="btn btn-primary">GUARDAR</a>
+				</div>
+		</div>
+		
+		<footer th:replace="fragments/footer :: footer"></footer>
+	</div>
+
+</body>
+
+</html>
