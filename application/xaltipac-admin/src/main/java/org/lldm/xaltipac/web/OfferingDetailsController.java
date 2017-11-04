@@ -10,10 +10,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
+import org.lldm.xaltipac.data.model.Offering;
 import org.lldm.xaltipac.data.model.OfferingDetails;
 import org.lldm.xaltipac.data.model.UserDetails;
 import org.lldm.xaltipac.data.model.Week;
 import org.lldm.xaltipac.service.OfferingDetailService;
+import org.lldm.xaltipac.service.OfferingService;
 import org.lldm.xaltipac.service.UserDetailsService;
 import org.lldm.xaltipac.service.WeekService;
 import org.lldm.xaltipac.service.constantes.ActionsEnum;
@@ -50,6 +52,9 @@ public class OfferingDetailsController {
 
 	@Autowired
 	UserDetailsService userDetailsService;
+	
+	@Autowired
+	OfferingService offeringService;
 
 	@Autowired
 	LogUtil logUtil;
@@ -130,6 +135,112 @@ public class OfferingDetailsController {
 		return output;
 	}
 	
+	@RequestMapping(value = "/searchOfferingByWeek", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Map<String, Object> searchOfferingDByWeek(@RequestParam Map<String, String> requestParams,
+			HttpServletRequest request) {
+
+		Map<String, Object> output = new HashMap<String, Object>();
+		
+		Integer idWeek = Integer.parseInt(requestParams.get("weekId"));
+		boolean isEmpty = true;
+		
+		Week week = weekService.findOne(idWeek);
+		
+
+		List<OfferingDetails> offeringDetails = offeringDetailService.searchByWeek(week);
+
+		if (offeringDetails.size() > 0) {
+			isEmpty = false;
+			for (OfferingDetails offeringDetails2 : offeringDetails) {
+				LOG.debug("ENCONTRE --------------- "  + offeringDetails2.getOffering().getName());
+			}
+		}
+
+		output.put("isEmpty", isEmpty);
+		output.put("offeringDetails", offeringDetails);
+		
+
+		return output;
+	}
 	
+	@Transactional
+	@RequestMapping(value = "/weekClose", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Map<String, Object> weekClose(@RequestParam Map<String, String> requestParams,
+			HttpServletRequest request) {
+
+		Map<String, Object> output = new HashMap<String, Object>();
+		
+		Integer idWeek = Integer.parseInt(requestParams.get("anonymousWeek"));
+		
+		boolean isComplete = false;
+		Offering offering = null;
+		
+		Week week = weekService.findOne(idWeek);
+		UserDetails userDatils = userDetailsService.findOne(2);
+		
+		String indeces = requestParams.get("index-anonymous");
+		String index[] = indeces.split(",");
+		
+		if(indeces.length() > 0){
+			for(int x = 0; x < index.length ; x++){
+				offering = offeringService.findOne(Integer.parseInt(requestParams.get("optionOffering-" + index[x])));
+				double quantity = Double.parseDouble(requestParams.get("anonymous-" + index[x]));
+				OfferingDetails offeringDetail = new OfferingDetails(quantity, offering, week, userDatils);
+				// Agregarmos los anónimos
+				//offeringDetailService.save(offeringDetail);
+//				LOG.debug("OFRENDA ANONIMA A GUARDAR ------------- " + offeringDetail);
+//				LOG.debug("ANONIMO ---------------------- " + index[x]);
+//				LOG.debug("CANTIDAD ----------- " + requestParams.get("anonymous-" + index[x]));
+//				LOG.debug("OFRENDA -------------------- " + requestParams.get("optionOffering-" + index[x]));
+			}
+		}
+		
+		
+		Double totalPrice = offeringDetailService.getTotalOffering(week);
+		LOG.debug("TOTAL QEU SE JUNTO ----------- " + totalPrice);
+		
+		LOG.debug("INDICES QUE ENCONTRE ------ " + indeces);
+		LOG.debug("SEMANA A CERRAR ---------" + week);
+		
+		week.setEnabled(0);
+		week.setTotal(totalPrice);
+		// Editamos la semana
+		//weekService.save(week);
+		isComplete = true;
+
+
+		output.put("isComplete", isComplete);
+
+		return output;
+	}
+	
+	@RequestMapping(value = "/generatePDF", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody Map<String, Object> generateWeekPDF(@RequestParam Map<String, String> requestParams,
+			HttpServletRequest request) {
+
+		Map<String, Object> output = new HashMap<String, Object>();
+		
+		Integer idWeek = Integer.parseInt(requestParams.get("weekPDFId"));
+		
+		boolean isComplete = false;
+		
+		Week week = weekService.findOne(idWeek);
+		
+		LOG.debug("VOY A GENERAR EL PDF DE  --------------- " + week);
+		
+		List<OfferingDetails> offeringHombres = offeringDetailService.getAllOfferingDetailsByHombre(week);
+		
+		for (OfferingDetails offeringDetails : offeringHombres) {
+			LOG.debug(offeringDetails.getUserDetails().getName());
+		}
+		
+		
+		isComplete = true;
+
+
+		output.put("isComplete", isComplete);
+
+		return output;
+	}
 	
 }

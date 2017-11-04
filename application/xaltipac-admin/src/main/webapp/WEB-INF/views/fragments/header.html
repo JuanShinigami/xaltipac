@@ -21,28 +21,28 @@
 				<ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
 					<li class="nav-item" data-toggle="tooltip" data-placement="right"
 						title="Dashboard"><a href="../" th:href="@{/}"
-						class="nav-link"> <i class="fa fa-fw fa-dashboard"></i> <span
+						class="nav-link"> <i class="fa fa-fw fa-home"></i> <span
 							class="nav-link-text">Inicio</span>
 					</a></li>
 					<li sec:authorize="hasRole('showUsers')" class="nav-item"
 						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
 						href="../usuario/" th:href="@{/usuario}" class="nav-link"> <i
-							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Usuarios</span>
+							class="fa fa-fw fa-user-circle"></i> <span class="nav-link-text">Usuarios</span>
 					</a></li>
 					<li sec:authorize="hasRole('showProfiles')" class="nav-item"
 						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
 						href="../perfil/" th:href="@{/perfil}" class="nav-link"> <i
-							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Perfiles</span>
+							class="fa fa-fw fa-user"></i> <span class="nav-link-text">Perfiles</span>
 					</a></li>
 					<li sec:authorize="hasRole('showResources')" class="nav-item"
 						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
 						href="../recurso/" th:href="@{/recurso}" class="nav-link"><i
-							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Recursos</span>
+							class="fa fa-fw fa-bars"></i> <span class="nav-link-text">Recursos</span>
 					</a></li>
 					<li sec:authorize="hasRole('showGroups')" class="nav-item"
 						data-toggle="tooltip" data-placement="right" title="Dashboard"><a
 						href="../groups/" th:href="@{/groups}" class="nav-link"><i
-							class="fa fa-fw fa-dashboard"></i> <span class="nav-link-text">Grupos</span>
+							class="fa fa-fw fa-users"></i> <span class="nav-link-text">Grupos</span>
 					</a></li>
 					<!-- 					<li sec:authorize="hasRole('showOfferings')" class="nav-item" -->
 					<!-- 						data-toggle="tooltip" data-placement="right" title="Dashboard"><a -->
@@ -54,7 +54,7 @@
 						class="nav-link nav-link-collapse collapsed"
 						data-toggle="collapse" href="#collapseMulti"
 						data-parent="#exampleAccordion"> <i
-							class="fa fa-fw fa-sitemap"></i> <span class="nav-link-text">Ofrendas</span>
+							class="fa fa-fw fa-usd"></i> <span class="nav-link-text">Ofrendas</span>
 					</a>
 						<ul class="sidenav-second-level collapse" id="collapseMulti">
 							<li sec:authorize="hasRole('showOfferings')" title="Dashboard"><a href="../offering/" th:href="@{/offering}">Tipos de Ofrendas</a></li>

@@ -17,7 +17,7 @@
 <body class="fixed-nav sticky-footer" id="page-top">
 	<nav th:replace="fragments/header :: header"></nav>
 	<!-- Navigation-Header -->
-	<div class="content-wrapper">
+	<div class="content-wrapper" id="canvas-content-data">
 		<!-- Contenido -->
 		<div class="container-fluid">
 			<!-- Breadcrumbs-->
@@ -62,23 +62,38 @@
 					<td th:text="${week.notes}"></td>
 
 					<td th:text="${week.total}"></td>
-					<td><input type="button" id="delete"
-						sec:authorize="hasRole('editWeek')"
-						title="Modificar datos de la semana"
-						th:onclick="'editWeek(\'' + ${week.id} + '\')'"
-						class="btn btn-info" value="Editar" /> <input type="button"
-						id="delete" sec:authorize="hasRole('deleteWeek')"
-						title="Eliminar semana" class="btn btn-danger"
-						th:onclick="'showModalDelete(\''+${week.day}+'\')'"
-						value="Eliminar" />
-						<input type="button"
-						id="Ingresar ofrendas" title="Registrar ofrendas" class="btn btn-warning"
-						th:onclick="'registerOfferings(\''+${week.day}+'\')'"
-						value="Registrar" />
-						<input type="button"
-						id="Cerra Semana" title="Cerrar Semana" class="btn btn-success"
-						th:onclick="'showModalCloseWeek(\''+${week.day}+'\')'"
-						value="Cerrar Semana" />
+					<td><button type="button" th:if="${week.enabled == 1}"
+							sec:authorize="hasRole('editWeek')" data-toggle="tooltip"
+							data-placement="right" title="Editar fecha"
+							th:onclick="'editWeek(\'' + ${week.id} + '\')'"
+							class="btn btn-info">
+							<i class="fa fa-pencil"></i>
+						</button>
+						<button type="button" th:if="${week.enabled == 1}"
+							sec:authorize="hasRole('deleteWeek')" title="Eliminar semana"
+							class="btn btn-danger" data-toggle="tooltip"
+							data-placement="right"
+							th:onclick="'showModalDelete(\''+${week.day}+'\')'">
+							<i class="fa fa-trash"></i>
+						</button>
+						<button type="button" th:if="${week.enabled == 1}"
+							title="Registrar ofrendas" class="btn btn-warning"
+							data-toggle="tooltip" data-placement="right"
+							th:onclick="'registerOfferings(\''+${week.day}+'\')'">
+							<i class="fa fa-pencil-square-o"></i>
+						</button>
+						<button type="button" th:if="${week.enabled == 1}"
+							title="Cerrar Semana" class="btn btn-success"
+							data-toggle="tooltip" data-placement="right"
+							th:onclick="'showModalCloseWeek(\''+${week.id}+'\')'">
+							<i class="fa fa-window-close"></i>
+						</button>
+						<button type="button" th:if="${week.enabled == 0}"
+							title="Generar reporte semanal" class="btn btn-dark"
+							data-toggle="tooltip" data-placement="right"
+							th:onclick="'generetedPDF(\''+${week.id}+'\')'">
+							<i class="fa fa-file-pdf-o"></i>
+						</button>
 						<div class="modal fade" id="" tabindex="-1" role="dialog"
 							aria-labelledby="myModalLabel" aria-hidden="true"
 							th:attrappend="id='modal-delete-' + ${week.day}">
@@ -100,8 +115,7 @@
 
 										<form th:action="@{/week/delete}" method="post">
 
-											<input name="idWeek" type="hidden"
-												th:value="${week.id}" />
+											<input name="idWeek" type="hidden" th:value="${week.id}" />
 											<button type="button" class="btn btn-danger"
 												data-dismiss="modal">Cancelar</button>
 											<button onclick="$(this).closest('form').submit();"
@@ -112,10 +126,9 @@
 							</div>
 						</div></td>
 					<form th:id="'edit-week-' + ${week.id} + '-form'" action=""
-						method="post"
-						th:action="@{'/week/' + ${week.id} + '/edit'}" />
-					<form th:id="'register-offering-' + ${week.day} + '-form'" action=""
-						method="post"
+						method="post" th:action="@{'/week/' + ${week.id} + '/edit'}" />
+					<form th:id="'register-offering-' + ${week.day} + '-form'"
+						action="" method="post"
 						th:action="@{'/week/offeringDetails/' + ${week.id} + '/'}" />
 
 
@@ -125,11 +138,108 @@
 		</table>
 		<br />
 
+		<div class="modal fade bd-example-modal-lg" id="modal-add-anonymous"
+			tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">Cierre de
+							Semana</h5>
+						<button class="close" type="button" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">×</span>
+						</button>
+					</div>
+					<div class="modal-body">
+
+						<div class="alert alert-light" role="alert">Una vez que de
+							clic en el botón Guardar no podrá editar esta semana. Solo podrá
+							vez el reporte. Agregar anónimos si es necesario.</div>
+						<div id="alert-anonymous" class="alert alert-danger" role="alert">Es
+							necesario que llenes todos los datos</div>
+
+						<div class="container-fluid">
+							<div class="row">
+								<div class="col-1 col-sm-3 col-md-8"></div>
+								<div class="col-11 col-sm-9 col-md-4 modal-a">
+									<a href="javascript:{}" onclick="javascript:addAnonymous();"
+										id="a-add-anonymous" class="btn btn-success">Agregar
+										anónimo</a>
+								</div>
+							</div>
+
+						</div>
+						<form id="close-week-form" action=""
+							th:action="@{'/week/offeringDetails/weekClose'}" method="post">
+							<input type="hidden" id="index-anonymous" name="index-anonymous" />
+							<input type="hidden" id="anonymousWeek" name="anonymousWeek" />
+							<div class="row" id="content-model-add-anonymous"></div>
+						</form>
+					</div>
+					<!-- 						<ol class="breadcrumb"> -->
+					<!-- 							<h5 id="titleModalOffering" /> -->
+					<!-- 						</ol> -->
+					<!-- 						<form id="edit-offering-details-form" action="" -->
+					<!-- 							th:action="@{'/week/offeringDetails/weekClose'}" -->
+					<!-- 							method="post"> -->
+					<!-- 							<input id="contentIndices" name="contentIndices" type="hidden" /> -->
+					<!-- 							<div id="contentOffering"></div> -->
+					<!-- 						</form> -->
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+						<a href="javascript:{}" onclick="javascript:saveOfferingWeek();"
+							id="cat-save" class="btn btn-primary">Guardar</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+		<form id="serach-offering-week" action="" method="post"
+			th:action="@{'/week/offeringDetails/searchOfferingByWeek'}">
+			<input type="hidden" id="weekId" name="weekId" />
+		</form>
+		<form id="generate-pdf-week-form" action="" method="post"
+			th:action="@{'/week/offeringDetails/generatePDF'}">
+			<input type="hidden" id="weekPDFId" name="weekPDFId" />
+		</form>
+
+
 		<footer th:replace="fragments/footer :: footer"></footer>
 
 	</div>
+
+<!-- 	<div id="prueba-pdf-tabla" class="prueba-pdf-tabla"> -->
+<!-- 		<div class="row"> -->
+<!-- 			<div class="col-3"> -->
+<!-- 				<img style="width: 100px; height: 100px;" -->
+<!-- 					src="../../../resources/images/logolldm.png" -->
+<!-- 					th:src="@{/resources/images/logolldm.png}" /> -->
+<!-- 			</div> -->
+<!-- 			<div class="col-6" style="text-align: center;"> -->
+<!-- 				<p>Iglesia La Luz Del Mundo</p> -->
+<!-- 			</div> -->
+<!-- 			<div class="col-3">Fecha</div> -->
+<!-- 		</div> -->
+<!-- 		<br /> <br /> -->
+<!-- 		<table class="table table-hover"> -->
+<!-- 			<thead> -->
+<!-- 				<tr id="tr-thead-table"> -->
+					
+<!-- 				</tr> -->
+<!-- 			</thead> -->
+<!-- 			<tbody id="tr-thead-table-body"> -->
+				
+<!-- 			</tbody> -->
+<!-- 		</table> -->
+<!-- 	</div> -->
+
 	<script type="text/javascript">
 		$(document).ready(function() {
+			$('[data-toggle="tooltip"]').tooltip();
 			$('#table-week').DataTable({
 				"sPaginationType" : "full_numbers",
 				"scrollX" : true,

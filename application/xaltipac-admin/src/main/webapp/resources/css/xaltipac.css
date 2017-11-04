@@ -21,3 +21,22 @@
 	border-color: #000;
 	margin-bottom: 30px;
 }
+
+.modal-a{
+	text-align: right;
+}
+
+.anonymous-label{
+	font-weight: bold;
+	color: #0080FF;
+	margin-top: 25px;
+}
+
+.div-delete{
+	padding-top: 28px;
+}
+
+.prueba-pdf-tabla{
+	display: none;
+	width: 720px;
+}
