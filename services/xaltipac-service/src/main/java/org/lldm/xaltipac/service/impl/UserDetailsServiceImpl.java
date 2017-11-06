@@ -61,6 +61,21 @@ public class UserDetailsServiceImpl extends BaseServiceImpl<UserDetails, Integer
 		return userDetailsRepository.getAllUsersActive();
 	}
 
+	@Override
+	public List<UserDetails> getAllMens() {
+		return userDetailsRepository.getAllMens();
+	}
+
+	@Override
+	public List<UserDetails> getAllWomen() {
+		return userDetailsRepository.getAllWomen();
+	}
+
+	@Override
+	public List<UserDetails> getAllChildren() {
+		return userDetailsRepository.getAllChildren();
+	}
+
 	
 
 }

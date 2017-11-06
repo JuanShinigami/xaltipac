@@ -22,8 +22,5 @@ public interface OfferingDetailService extends BaseService<OfferingDetails, Inte
 	List<OfferingDetails> findByOfferingAndWeek(Offering offering, Week day);
 	List<OfferingDetails> searchByWeek(Week week);
 	Double getTotalOffering(Week week);
-	List<OfferingDetails> getAllOfferingDetailsByHombre(Week week);
-	List<OfferingDetails> getAllOfferingDetailsByMujer(Week week);
-	List<OfferingDetails> getAllOfferingDetailsByChild(Week week);
 	void saveManyOfferginDetails(Week week, List<OfferingDetailsOfferingDTO> offeringDetailsOfferingList);
 }

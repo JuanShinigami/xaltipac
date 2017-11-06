@@ -262,7 +262,7 @@ $(document).ready(function() {
         var currentDate = new Date();
         var time = currentDate.getTime().toString();
         var res = time.substring(10, 5);
-        $("#identifier").val(name+lastName+res);
-        $("#password").val(name+lastName+res);
+        $("#identifier").val(name+res);
+        $("#password").val(name+res);
 	}
 	//]]>

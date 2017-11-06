@@ -155,8 +155,8 @@ public class UserController extends BaseController {
             user.setPassword(encryptMD5.main(userForm.getPassword()));
         }
         
-        String[] parts = userForm.getBirthdate().split("-");
-        String bir = parts[2] + "-" + parts[1] + "-" + parts[0];
+        //String[] parts = userForm.getBirthdate().split("-");
+        //String bir = parts[2] + "-" + parts[1] + "-" + parts[0];
 //
         user.setLastModified(new Date());
         user.setEnabled(1);

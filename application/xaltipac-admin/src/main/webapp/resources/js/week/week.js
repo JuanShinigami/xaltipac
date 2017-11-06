@@ -126,7 +126,7 @@ function saveOfferingWeek(){
 	//alert(indexAnonymous);
 	if(flagContinue === true){
 		$('#alert-anonymous').hide();
-		alert("Podemos continuar");
+		//alert("Podemos continuar");
 		$('#index-anonymous').val(indexAnonymous.substring(0,(indexAnonymous.length - 1)));
 		$('#anonymousWeek').val($('#weekId').val());
 		$.ajax({
@@ -134,10 +134,14 @@ function saveOfferingWeek(){
 			url : $('#close-week-form').attr('action'),
 			data : ($('#close-week-form').serialize()),
 			success : function(response) {
-				
+				if(response.isComplete === true){
+					$('#modal-add-anonymous').modal('toggle');
+				}else{
+					alert("Hubo un error pongase en contacto con el administrador.");
+				}
 			},
 			error : function(e) {
-				// TODO: Action in error stage
+				alert("Hubo un error pongase en contacto con el administrador.");
 			}
 		});
 	}else{
@@ -180,14 +184,18 @@ function generetedPDF(id){
 	var dateFormat = date.getUTCDate() + "-" + date.getUTCMonth() + "-" + date.getUTCFullYear();
 	
 	var options = {weekday: "long", year: "numeric", month: "long", day: "numeric"};
-	//createPDF(dateFormat, date.toLocaleDateString("es-ES", options), 5);
+	
 	//alert(date.toLocaleDateString("es-ES", options));
 	 $.ajax({
 		type : "POST",
 		url : $('#generate-pdf-week-form').attr('action'),
 		data : ($('#generate-pdf-week-form').serialize()),
 		success : function(response) {
-
+			if(response.isComplete === true){
+				createPDF(dateFormat, date.toLocaleDateString("es-ES", options), response.countColumns, response.offerings, response.mensPDF, response.womanPDF, response.childrenPDF);
+			}else{
+				alert("No es posible generar el pdf consulta con tu administrador");
+			}
 		},
 		error : function(e) {
 			// TODO: Action in error stage
@@ -195,7 +203,18 @@ function generetedPDF(id){
 	});
 }
 
-function createPDF(nameReport, date, countColums){
+function createPDF(nameReport, date, countColums, nameColumn, mens, woman, children){
+	
+	var logitudAprox = 0;
+	var clear = 0;
+	var columns = ["Nombre"];
+	$.each(nameColumn, function(index,element) {
+		columns.push(element);
+	});
+	
+	
+	
+	
 	
 	var doc = new jsPDF();
 	
@@ -211,24 +230,89 @@ function createPDF(nameReport, date, countColums){
 	doc.setFontSize(10);
 	doc.setFontType("100");
 	doc.text(155, 35, date);
-//	var imageTest = new Image();
-//	imageTest.src = 'http://localhost:8080/xaltipac-admin/resources/images/pets.png';
-//	doc.addImage(imageTest, 'JPEG', 10, 50, 190, 100);
+	
+	logitudAprox = 50;
+	
 	doc.setFontSize(14);
 	doc.setFontType("bold");
-	doc.text(10, 50, 'Nombre');
-	var widthCol = repartColmn(countColums);
-	for(x = 1; x <= countColums; x++){
-		doc.text(60 + (x * widthCol), 50, 'Col-' + x);
-	}
-	doc.setFontSize(12);
+	//alert(logitudAprox);
+	
+	//---------------Hombres----------------
+	logitudAprox = logitudAprox + 20;
+	var rowsMens = [];
+	$.each(mens, function(index,element) {
+		var rowMens = [];
+		rowMens.push(element.name);		
+		$.each(element.quantity, function(index,elementS) {
+			rowMens.push("$"+elementS);
+		});	
+		rowsMens.push(rowMens);
+		logitudAprox = logitudAprox + 12;
+		clear = clear + 12;
+	});
+	
+	doc.autoTable(columns, rowsMens, {
+	    margin: {top: logitudAprox -clear},
+	    addPageContent: function(data) {
+	    	doc.text("Hombres", 95, logitudAprox - clear - 5);
+	    }
+	});
+	
+	doc.setFontSize(14);
 	doc.setFontType("100");
+	doc.setFontType("bold");
+	//alert(logitudAprox);
+	//-----------Mujeres----------------
+	clear = 0;
+	logitudAprox = logitudAprox + 20;
+	var rowsW = [];
+	$.each(woman, function(index,element) {
+		var rowW = [];
+		rowW.push(element.name);		
+		$.each(element.quantity, function(index,elementS) {
+			rowW.push("$"+elementS);
+		});	
+		rowsW.push(rowW);
+		logitudAprox = logitudAprox + 12;
+		clear = clear + 12;
+	});
 	
+	doc.autoTable(columns, rowsW, {
+	    margin: {top: logitudAprox - clear},
+	    addPageContent: function(data) {
+	    	doc.text("Mujeres", 90, logitudAprox - clear - 5);
+	    }
+	});
+	//alert(logitudAprox);
+	//-----------Niños----------------
+	logitudAprox = logitudAprox + 20;
+	var rowsC = [];
+	clear = 0;
+	$.each(children, function(index,element) {
+		var rowC = [];
+		rowC.push(element.name);		
+		$.each(element.quantity, function(index,elementS) {
+			rowC.push("$"+elementS);
+		});	
+		rowsC.push(rowC);
+		logitudAprox = logitudAprox + 12;
+		clear = clear + 12;
+	});
 	
+	doc.setFontSize(14);
+	doc.setFontType("bold");
+	
+	doc.autoTable(columns, rowsC, {
+	    margin: {top: logitudAprox - clear},
+	    addPageContent: function(data) {
+	    	doc.text("Niños", 95, logitudAprox - clear - 5);
+	    }
+	});
+	//alert(logitudAprox);
 	doc.save(nameReport + '.pdf');
 }
 
 function repartColmn(nColumn){
-	var part = 120 / nColumn;
+	var part = 100 / nColumn;
 	return part;
 }

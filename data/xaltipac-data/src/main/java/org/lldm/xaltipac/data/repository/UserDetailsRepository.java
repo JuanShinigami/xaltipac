@@ -31,4 +31,13 @@ public interface UserDetailsRepository extends PagingAndSortingRepository<UserDe
 			+ "OR u.user.profile.name LIKE %:filter% "
 			+ "OR ( case when day(u.user.lastModified)<10 then '0' else '' end || day(u.user.lastModified) || case when month(u.user.lastModified)<10 then '/0' else '/' end || month(u.user.lastModified) || '/' || year(u.user.lastModified) ) LIKE %:filter% )")
 	public Page<UserDetails> getAllActiveUsers(@Param("filter") String filter, Pageable pageable );
+
+	@Query("FROM UserDetails u WHERE gender = 'Hombre' AND group.id != 1")
+	public List<UserDetails> getAllMens();
+	
+	@Query("FROM UserDetails u WHERE gender = 'Mujer' AND group.id != 1")
+	public List<UserDetails> getAllWomen();
+	
+	@Query("FROM UserDetails u WHERE group.id = 1")
+	public List<UserDetails> getAllChildren();
 }

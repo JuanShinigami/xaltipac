@@ -18,8 +18,9 @@ public interface UserDetailsService extends BaseService<UserDetails, Integer> {
 	public Page<UserDetails> getAllActiveUsers(PageData pageData);
 	public List<UserDetails> getAllUsersActive();
 	public UserDetails findByUser(User user);
-
 	public UserDetails findByEmail(String email);
-
 	public List<UserDetails> findByGroup(Group group);
+	public List<UserDetails> getAllMens();
+	public List<UserDetails> getAllWomen();
+	public List<UserDetails> getAllChildren();
 }

@@ -84,19 +84,4 @@ public class OfferingDetailServiceImpl extends BaseServiceImpl<OfferingDetails, 
 		return offeringDetailsRepository.getTotalOffering(week);
 	}
 
-	@Override
-	public List<OfferingDetails> getAllOfferingDetailsByHombre(Week week) {
-		return offeringDetailsRepository.getAllOfferingDetailsByHombre(week);
-	}
-
-	@Override
-	public List<OfferingDetails> getAllOfferingDetailsByMujer(Week week) {
-		return offeringDetailsRepository.getAllOfferingDetailsByMujer(week);
-	}
-
-	@Override
-	public List<OfferingDetails> getAllOfferingDetailsByChild(Week week) {
-		return offeringDetailsRepository.getAllOfferingDetailsByChild(week);
-	}
-
 }

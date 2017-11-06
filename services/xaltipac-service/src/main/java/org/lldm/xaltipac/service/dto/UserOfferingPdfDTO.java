@@ -38,4 +38,11 @@ public class UserOfferingPdfDTO {
 		this.quantity = quantity;
 	}
 
+	@Override
+	public String toString() {
+		return "UserOfferingPdfDTO [name=" + name + ", quantity=" + quantity + "]";
+	}
+
+	
+	
 }

@@ -3,6 +3,7 @@
  */
 package org.lldm.xaltipac.web;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.lldm.xaltipac.service.OfferingService;
 import org.lldm.xaltipac.service.UserDetailsService;
 import org.lldm.xaltipac.service.WeekService;
 import org.lldm.xaltipac.service.constantes.ActionsEnum;
+import org.lldm.xaltipac.service.dto.UserOfferingPdfDTO;
 import org.lldm.xaltipac.service.util.LogUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -187,7 +189,7 @@ public class OfferingDetailsController {
 				double quantity = Double.parseDouble(requestParams.get("anonymous-" + index[x]));
 				OfferingDetails offeringDetail = new OfferingDetails(quantity, offering, week, userDatils);
 				// Agregarmos los anónimos
-				//offeringDetailService.save(offeringDetail);
+				offeringDetailService.save(offeringDetail);
 //				LOG.debug("OFRENDA ANONIMA A GUARDAR ------------- " + offeringDetail);
 //				LOG.debug("ANONIMO ---------------------- " + index[x]);
 //				LOG.debug("CANTIDAD ----------- " + requestParams.get("anonymous-" + index[x]));
@@ -205,7 +207,7 @@ public class OfferingDetailsController {
 		week.setEnabled(0);
 		week.setTotal(totalPrice);
 		// Editamos la semana
-		//weekService.save(week);
+		weekService.save(week);
 		isComplete = true;
 
 
@@ -227,18 +229,71 @@ public class OfferingDetailsController {
 		Week week = weekService.findOne(idWeek);
 		
 		LOG.debug("VOY A GENERAR EL PDF DE  --------------- " + week);
-		
-		List<OfferingDetails> offeringHombres = offeringDetailService.getAllOfferingDetailsByHombre(week);
-		
-		for (OfferingDetails offeringDetails : offeringHombres) {
-			LOG.debug(offeringDetails.getUserDetails().getName());
+		List<String> listOfferings = new ArrayList<String>();
+		List<OfferingDetails> offerings = offeringDetailService.searchByWeek(week);
+		for (OfferingDetails offering : offerings) {
+			listOfferings.add(offering.getOffering().getName());
 		}
+		int cantRow = offerings.size();
+		
+		//----------------------------------Hombres------------------------------
+		List<UserDetails> userMens = userDetailsService.getAllMens();
+		List<UserOfferingPdfDTO> mensPDF = new ArrayList<UserOfferingPdfDTO>();
+		List<OfferingDetails> listOfferingDetilasByWeekAndUser = null;
+		String nameComplete = null;
+		for (UserDetails userDetailsMens : userMens) {
+			List<Double> quantityEach = new ArrayList<Double>();
+			listOfferingDetilasByWeekAndUser = offeringDetailService.findByUserDetailsAndWeek(userDetailsMens, week);
+			for (OfferingDetails offeringDetailsMens : listOfferingDetilasByWeekAndUser) {
+				quantityEach.add(offeringDetailsMens.getQuantity());
+			}
+			nameComplete = userDetailsMens.getName() + " " + userDetailsMens.getLastName() + " " + userDetailsMens.getLastNameMaternal();
+			UserOfferingPdfDTO userOfferingPdfMens = new UserOfferingPdfDTO(nameComplete, quantityEach);
+			mensPDF.add(userOfferingPdfMens);
+		}
+		
+		//-----------------------Mujeres-------------------------------
+		List<UserDetails> userWoman = userDetailsService.getAllWomen();
+		List<UserOfferingPdfDTO> womanPDF = new ArrayList<UserOfferingPdfDTO>();
+		for (UserDetails userDetailsWoman : userWoman) {
+			List<Double> quantityEach = new ArrayList<Double>();
+			listOfferingDetilasByWeekAndUser = offeringDetailService.findByUserDetailsAndWeek(userDetailsWoman, week);
+			for (OfferingDetails offeringDetailsWoman : listOfferingDetilasByWeekAndUser) {
+				quantityEach.add(offeringDetailsWoman.getQuantity());
+			}
+			nameComplete = userDetailsWoman.getName() + " " + userDetailsWoman.getLastName() + " " + userDetailsWoman.getLastNameMaternal();
+			UserOfferingPdfDTO userOfferingPdfWoman = new UserOfferingPdfDTO(nameComplete, quantityEach);
+			womanPDF.add(userOfferingPdfWoman);
+		}
+		
+		//-----------------------Niños---------------------------------
+		List<UserDetails> userChildren = userDetailsService.getAllChildren();
+		List<UserOfferingPdfDTO> childrenPDF = new ArrayList<UserOfferingPdfDTO>();
+		for (UserDetails userDetailsChildren : userChildren) {
+			List<Double> quantityEach = new ArrayList<Double>();
+			listOfferingDetilasByWeekAndUser = offeringDetailService.findByUserDetailsAndWeek(userDetailsChildren, week);
+			for (OfferingDetails offeringDetailsChildren : listOfferingDetilasByWeekAndUser) {
+				quantityEach.add(offeringDetailsChildren.getQuantity());
+			}
+			nameComplete = userDetailsChildren.getName() + " " + userDetailsChildren.getLastName() + " " + userDetailsChildren.getLastNameMaternal();
+			UserOfferingPdfDTO userOfferingPdfChildren = new UserOfferingPdfDTO(nameComplete, quantityEach);
+			childrenPDF.add(userOfferingPdfChildren);
+		}
+		
+//		for (UserOfferingPdfDTO hombres : mensPDF) {
+//			LOG.debug("NOMBRE COMPLETO DEL HOMBRE ENCONTRADO ----- " + hombres.getName());
+//		}
+//		LOG.debug("COLUMNAS ------------------------------- " + cantRow);
 		
 		
 		isComplete = true;
 
-
+		output.put("countColumns", cantRow);
+		output.put("mensPDF", mensPDF);
+		output.put("womanPDF", womanPDF);
+		output.put("childrenPDF", childrenPDF);
 		output.put("isComplete", isComplete);
+		output.put("offerings", listOfferings);
 
 		return output;
 	}
