@@ -22,8 +22,12 @@ function addWeek() {
 	
 }
 
-function editWeek(id) {
-
+function editWeek(id, day) {
+	var res = day.split("-");
+	//alert();
+	$('#id-week').val(id);
+	$('#day-week').val(res[2] + "-" + res[1] + "-" + res[0]);
+	$('#modal-edit-week').modal();
 	//$('#edit-week-' + id + '-form').submit();
 
 }

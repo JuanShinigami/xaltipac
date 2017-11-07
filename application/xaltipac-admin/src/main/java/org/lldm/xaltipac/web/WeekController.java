@@ -119,13 +119,13 @@ public class WeekController {
         weekService.save(week);
 
         offeringDetailService.saveManyOfferginDetails(week, weekForm.getOfferingDetilsOfferingList());
-        WeekForm weekClean = new WeekForm(offeringService.getAllOfferings());
-        model.addAttribute("weekForm", weekClean);
+//        WeekForm weekClean = new WeekForm(offeringService.getAllOfferings());
+//        model.addAttribute("weekForm", weekClean);
 
 
         model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");
 
-        return WEEK_CREATE;
+        return listWeeks(model, request);
 
     }
 	

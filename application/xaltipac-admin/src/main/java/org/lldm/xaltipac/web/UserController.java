@@ -183,9 +183,9 @@ public class UserController extends BaseController {
         userDetailsService.save(userDetails);
 //
         model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");
-        UserForm userFormClean = new UserForm();
-        model.addAttribute("userForm", userFormClean);
-        return USER_CREATE;
+//        UserForm userFormClean = new UserForm();
+//        model.addAttribute("userForm", userFormClean);
+        return listUsers(model, new PageData(), request);
 
     }
 

@@ -124,13 +124,13 @@ public class ProfileController {
 
         actionService.saveMany(profile, profileForm.getActionResourceList());
 
-        ProfileForm profileClean = new ProfileForm(
-                resourceService.getAllResources());
-        model.addAttribute("profileForm", profileClean);
+//        ProfileForm profileClean = new ProfileForm(
+//                resourceService.getAllResources());
+//        model.addAttribute("profileForm", profileClean);
 
         model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");
 
-        return PROFILE_CREATE;
+        return listProfiles(model, request);
 
     }
 

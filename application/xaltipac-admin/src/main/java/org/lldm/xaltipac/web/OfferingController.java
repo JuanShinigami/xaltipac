@@ -92,10 +92,10 @@ public class OfferingController {
         Offering offering = new Offering(offeringForm.getName(), offeringForm.getDescription(), new Date(), new Date());
         offeringService.save(offering);
 
-        OfferingForm offeringFormClean = new OfferingForm();
-        model.addAttribute("offeringForm", offeringFormClean);
+//        OfferingForm offeringFormClean = new OfferingForm();
+//        model.addAttribute("offeringForm", offeringFormClean);
         model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");
-        return OFFERING_CREATE;
+        return listOfferings(model, request);
 
     }
 

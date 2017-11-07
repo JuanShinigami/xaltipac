@@ -41,10 +41,6 @@ public class GroupController {
 	
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String listGroups(Model model, HttpServletRequest request) {
-//		List<Group> grupos = groupService.getAllGroups();
-//		for (Group group : grupos) {
-//			LOG.debug("GRUPOS ENCONTRADO CON EL NOMBRE DE  -------------- " + group.getName() + "-----------------");
-//		}
 		model.addAttribute("groupList", groupService.getAllGroups());
 		return "groups/groupsList";
 	}
@@ -104,34 +100,6 @@ public class GroupController {
 
 		return output;
 	}
-
-//	@Transactional
-//	@PreAuthorize("hasRole('addGroup')")
-//	@RequestMapping(value = "/add", method = RequestMethod.POST)
-//	public String addGroupPost(@Valid GroupForm groupForm, BindingResult result, Model model,
-//			HttpServletRequest request) {
-//
-//		if (result.hasErrors()) {
-//			return GROUP_CREATE;
-//		}
-//		
-//		LOG.debug("ENTRE AL METODO-------");
-//
-//		/**Group groupExist = groupService.findByName(groupForm.getName());
-//
-//		if (groupExist != null) {
-//			result.addError(new ObjectError("exist", "No se permite dar de alta dos grupos con el mismo nombre"));
-//			return GROUP_CREATE;
-//		}
-//
-//		Group group = new Group(groupForm.getName(), new Date(), new Date());
-//		groupService.save(group);
-//
-//		GroupForm groupFormClear = new GroupForm();
-//		model.addAttribute("groupForm", groupFormClear);
-//		model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");**/
-//		return listGroups(model, request);
-//	}
 
 	@PreAuthorize("hasRole('editGroup')")
 	@RequestMapping(value = "/{id}/edit", method = RequestMethod.POST)

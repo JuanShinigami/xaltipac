@@ -92,10 +92,10 @@ public class ResourceController {
                 resourceForm.getPath());
         resourceService.save(resource);
 
-        ResourceForm resourceFormClean = new ResourceForm();
-        model.addAttribute("resourceForm", resourceFormClean);
+//        ResourceForm resourceFormClean = new ResourceForm();
+//        model.addAttribute("resourceForm", resourceFormClean);
         model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");
-        return RESOURCE_CREATE;
+        return listResources(model, request);
 
     }
 
