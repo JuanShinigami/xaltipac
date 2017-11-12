@@ -16,5 +16,11 @@ public interface ProfileRepository extends PagingAndSortingRepository<Profile, I
 	@Query("FROM Profile")
 	public List<Profile> getAll();
 	
+	@Query("FROM Profile p WHERE p.id != 1 AND p.id != 1")
+	public List<Profile> getProfileForEncargado();
+	
+	@Query("FROM Profile p WHERE p.id = 2")
+	public List<Profile> getProfileForFinanzas();
+	
 	public Profile findByName(String name);
 }

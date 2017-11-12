@@ -10,8 +10,13 @@ import org.lldm.xaltipac.data.model.Profile;
  *
  */
 public interface ProfileService extends BaseService<Profile, Integer> {
-	
+
 	public List<Profile> getAll();
+
 	public Profile findByName(String name);
-	
+
+	public List<Profile> getProfileForEncargado();
+
+	public List<Profile> getProfileForFinanzas();
+
 }

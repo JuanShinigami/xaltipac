@@ -261,7 +261,7 @@ public class UserController extends BaseController {
 
         model.addAttribute("ESTATUS",
                 "Los datos se actualizaron correctamente.");
-        return USER_EDIT;
+        return listUsers(model, new PageData(), request);
 
     }
 
@@ -379,7 +379,26 @@ public class UserController extends BaseController {
 
     @ModelAttribute(value = "profiles")
     public List<Profile> getPerfiles() {
-        return perfilService.getAll();
+    	MyUserDetails userSession = (MyUserDetails) SecurityContextHolder
+                .getContext().getAuthentication().getPrincipal();
+    	List<Profile> listProfiles = null;
+    	switch (userSession.getUser().getProfile().getId()) {
+		case 3:
+			listProfiles = perfilService.getProfileForEncargado();
+			break;
+		case 5:
+			listProfiles = perfilService.getProfileForFinanzas();
+			break;
+		case 1:
+			listProfiles = perfilService.getAll();
+			break;
+
+		default:
+			log.debug("NO PUEDO REALIZAR ESTÁ ACCIÓN");
+			break;
+		}
+    	
+        return listProfiles;
     }
     
     @ModelAttribute(value = "groups")

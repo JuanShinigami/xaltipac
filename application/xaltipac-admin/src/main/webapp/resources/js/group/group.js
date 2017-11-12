@@ -59,10 +59,10 @@ function addGroup(){
 		success : function(response) {
 			if(response.isEditable === true){
 				if(response.flagExist === true){
-					alert("YA EXISTE");
+					alert("Ya existe esa grupo");
 				}else{
 					if(response.flagSave === true){
-						alert("Ya lo actualice :)");
+						location.reload();
 						
 					}else{
 						alert("No se actualizó verificalo por favor :(");
@@ -70,10 +70,10 @@ function addGroup(){
 				}
 			}else{
 				if(response.flagExist === true){
-					alert("YA EXISTE");
+					alert("Ya existe esa grupo");
 				}else{
 					if(response.flagSave === true){
-						alert("Ya lo agregué :)");
+						location.reload();
 						
 					}else{
 						alert("No se guardo verificalo por favor :(");

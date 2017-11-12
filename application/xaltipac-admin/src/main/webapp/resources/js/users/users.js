@@ -7,7 +7,7 @@ $(document).ready(function() {
 		//alert("Soy edición");
 		//alert($('#idactive').val());
 		if($('#idactive').val() === "1"){
-			alert("soy --- 1");
+			//alert("soy --- 1");
 			$('#active').val(1);
 			$( "#isActive" ).prop( "checked", true );
 		}else{

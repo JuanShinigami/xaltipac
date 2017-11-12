@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  */
 
 @Controller
-@PreAuthorize("hasRole('showOfferingDetails')")
+@PreAuthorize("hasRole('showWeeks')")
 @RequestMapping(value = "/week/offeringDetails")
 public class OfferingDetailsController {
 
@@ -54,13 +54,14 @@ public class OfferingDetailsController {
 
 	@Autowired
 	UserDetailsService userDetailsService;
-	
+
 	@Autowired
 	OfferingService offeringService;
 
 	@Autowired
 	LogUtil logUtil;
 
+	@PreAuthorize("hasRole('showOfferingDetails')")
 	@RequestMapping(value = "/{id}/", method = RequestMethod.POST)
 	public String listOfferingDetails(Model model, @PathVariable Integer id, HttpServletRequest request) {
 
@@ -76,6 +77,7 @@ public class OfferingDetailsController {
 
 	}
 
+	@PreAuthorize("hasRole('showOfferingDetails')")
 	@RequestMapping(value = "/searchOfferingByWeekAndUser", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> editWeekPost(@RequestParam Map<String, String> requestParams,
 			HttpServletRequest request) {
@@ -107,27 +109,29 @@ public class OfferingDetailsController {
 		return output;
 	}
 
+	@PreAuthorize("hasRole('showOfferingDetails')")
 	@Transactional
 	@RequestMapping(value = "/editOfferingDetails", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> editOfferingDetails(@RequestParam Map<String, String> requestParams,
 			HttpServletRequest request) {
-		
+
 		Map<String, Object> output = new HashMap<String, Object>();
 		boolean isSave = false;
 		boolean isEmpty = true;
 		String contentIndices = requestParams.get("contentIndices");
-		
+
 		String[] offeringDetail = contentIndices.split(",");
-//		for(int x = 0; x<contentIndices.length(); x++){
-//			LOG.debug("ENCONTRE UN INDEX ----------------- " + offeringDetail[x]);
-//		}
+		// for(int x = 0; x<contentIndices.length(); x++){
+		// LOG.debug("ENCONTRE UN INDEX ----------------- " +
+		// offeringDetail[x]);
+		// }
 		OfferingDetails offeringD = null;
-		if(offeringDetail.length > 0){
-			
+		if (offeringDetail.length > 0) {
+
 			isEmpty = false;
-			for(int x = 0; x<offeringDetail.length; x++){
+			for (int x = 0; x < offeringDetail.length; x++) {
 				offeringD = offeringDetailService.findOne(Integer.parseInt(offeringDetail[x]));
-				offeringD.setQuantity(Double.parseDouble(requestParams.get("offering-"+offeringD.getId())));
+				offeringD.setQuantity(Double.parseDouble(requestParams.get("offering-" + offeringD.getId())));
 				offeringDetailService.save(offeringD);
 			}
 			isSave = true;
@@ -136,98 +140,99 @@ public class OfferingDetailsController {
 		output.put("isSave", isSave);
 		return output;
 	}
-	
+
+	@PreAuthorize("hasRole('showOfferingDetails')")
 	@RequestMapping(value = "/searchOfferingByWeek", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> searchOfferingDByWeek(@RequestParam Map<String, String> requestParams,
 			HttpServletRequest request) {
 
 		Map<String, Object> output = new HashMap<String, Object>();
-		
+
 		Integer idWeek = Integer.parseInt(requestParams.get("weekId"));
 		boolean isEmpty = true;
-		
+
 		Week week = weekService.findOne(idWeek);
-		
 
 		List<OfferingDetails> offeringDetails = offeringDetailService.searchByWeek(week);
 
 		if (offeringDetails.size() > 0) {
 			isEmpty = false;
 			for (OfferingDetails offeringDetails2 : offeringDetails) {
-				LOG.debug("ENCONTRE --------------- "  + offeringDetails2.getOffering().getName());
+				LOG.debug("ENCONTRE --------------- " + offeringDetails2.getOffering().getName());
 			}
 		}
 
 		output.put("isEmpty", isEmpty);
 		output.put("offeringDetails", offeringDetails);
-		
 
 		return output;
 	}
-	
+
+	@PreAuthorize("hasRole('showOfferingDetails')")
 	@Transactional
 	@RequestMapping(value = "/weekClose", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> weekClose(@RequestParam Map<String, String> requestParams,
 			HttpServletRequest request) {
 
 		Map<String, Object> output = new HashMap<String, Object>();
-		
+
 		Integer idWeek = Integer.parseInt(requestParams.get("anonymousWeek"));
-		
+
 		boolean isComplete = false;
 		Offering offering = null;
-		
+
 		Week week = weekService.findOne(idWeek);
 		UserDetails userDatils = userDetailsService.findOne(2);
-		
+
 		String indeces = requestParams.get("index-anonymous");
 		String index[] = indeces.split(",");
-		
-		if(indeces.length() > 0){
-			for(int x = 0; x < index.length ; x++){
+
+		if (indeces.length() > 0) {
+			for (int x = 0; x < index.length; x++) {
 				offering = offeringService.findOne(Integer.parseInt(requestParams.get("optionOffering-" + index[x])));
 				double quantity = Double.parseDouble(requestParams.get("anonymous-" + index[x]));
 				OfferingDetails offeringDetail = new OfferingDetails(quantity, offering, week, userDatils);
 				// Agregarmos los anónimos
 				offeringDetailService.save(offeringDetail);
-//				LOG.debug("OFRENDA ANONIMA A GUARDAR ------------- " + offeringDetail);
-//				LOG.debug("ANONIMO ---------------------- " + index[x]);
-//				LOG.debug("CANTIDAD ----------- " + requestParams.get("anonymous-" + index[x]));
-//				LOG.debug("OFRENDA -------------------- " + requestParams.get("optionOffering-" + index[x]));
+				// LOG.debug("OFRENDA ANONIMA A GUARDAR ------------- " +
+				// offeringDetail);
+				// LOG.debug("ANONIMO ---------------------- " + index[x]);
+				// LOG.debug("CANTIDAD ----------- " +
+				// requestParams.get("anonymous-" + index[x]));
+				// LOG.debug("OFRENDA -------------------- " +
+				// requestParams.get("optionOffering-" + index[x]));
 			}
 		}
-		
-		
+
 		Double totalPrice = offeringDetailService.getTotalOffering(week);
 		LOG.debug("TOTAL QEU SE JUNTO ----------- " + totalPrice);
-		
+
 		LOG.debug("INDICES QUE ENCONTRE ------ " + indeces);
 		LOG.debug("SEMANA A CERRAR ---------" + week);
-		
+
 		week.setEnabled(0);
 		week.setTotal(totalPrice);
 		// Editamos la semana
 		weekService.save(week);
 		isComplete = true;
 
-
 		output.put("isComplete", isComplete);
 
 		return output;
 	}
-	
+
 	@RequestMapping(value = "/generatePDF", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> generateWeekPDF(@RequestParam Map<String, String> requestParams,
 			HttpServletRequest request) {
 
 		Map<String, Object> output = new HashMap<String, Object>();
-		
+
 		Integer idWeek = Integer.parseInt(requestParams.get("weekPDFId"));
-		
+
 		boolean isComplete = false;
-		
+
 		Week week = weekService.findOne(idWeek);
-		
+
 		LOG.debug("VOY A GENERAR EL PDF DE  --------------- " + week);
 		List<String> listOfferings = new ArrayList<String>();
 		List<OfferingDetails> offerings = offeringDetailService.searchByWeek(week);
@@ -235,57 +240,92 @@ public class OfferingDetailsController {
 			listOfferings.add(offering.getOffering().getName());
 		}
 		int cantRow = offerings.size();
-		
-		//----------------------------------Hombres------------------------------
+
+		// ----------------------------------Hombres------------------------------
 		List<UserDetails> userMens = userDetailsService.getAllMens();
 		List<UserOfferingPdfDTO> mensPDF = new ArrayList<UserOfferingPdfDTO>();
 		List<OfferingDetails> listOfferingDetilasByWeekAndUser = null;
 		String nameComplete = null;
 		for (UserDetails userDetailsMens : userMens) {
 			List<Double> quantityEach = new ArrayList<Double>();
+			boolean flagCero = false;
 			listOfferingDetilasByWeekAndUser = offeringDetailService.findByUserDetailsAndWeek(userDetailsMens, week);
 			for (OfferingDetails offeringDetailsMens : listOfferingDetilasByWeekAndUser) {
+				if (offeringDetailsMens.getQuantity() != 0.0) {
+					flagCero = true;
+				}
 				quantityEach.add(offeringDetailsMens.getQuantity());
 			}
-			nameComplete = userDetailsMens.getName() + " " + userDetailsMens.getLastName() + " " + userDetailsMens.getLastNameMaternal();
-			UserOfferingPdfDTO userOfferingPdfMens = new UserOfferingPdfDTO(nameComplete, quantityEach);
-			mensPDF.add(userOfferingPdfMens);
+			if (flagCero == true) {
+				nameComplete = userDetailsMens.getName() + " " + userDetailsMens.getLastName() + " "
+						+ userDetailsMens.getLastNameMaternal();
+				UserOfferingPdfDTO userOfferingPdfMens = new UserOfferingPdfDTO(nameComplete, quantityEach);
+				mensPDF.add(userOfferingPdfMens);
+			}
+
 		}
-		
-		//-----------------------Mujeres-------------------------------
+
+		// -----------------------Mujeres-------------------------------
 		List<UserDetails> userWoman = userDetailsService.getAllWomen();
 		List<UserOfferingPdfDTO> womanPDF = new ArrayList<UserOfferingPdfDTO>();
 		for (UserDetails userDetailsWoman : userWoman) {
+			boolean flagCero = false;
 			List<Double> quantityEach = new ArrayList<Double>();
 			listOfferingDetilasByWeekAndUser = offeringDetailService.findByUserDetailsAndWeek(userDetailsWoman, week);
 			for (OfferingDetails offeringDetailsWoman : listOfferingDetilasByWeekAndUser) {
+				if (offeringDetailsWoman.getQuantity() != 0.0) {
+					flagCero = true;
+				}
 				quantityEach.add(offeringDetailsWoman.getQuantity());
 			}
-			nameComplete = userDetailsWoman.getName() + " " + userDetailsWoman.getLastName() + " " + userDetailsWoman.getLastNameMaternal();
-			UserOfferingPdfDTO userOfferingPdfWoman = new UserOfferingPdfDTO(nameComplete, quantityEach);
-			womanPDF.add(userOfferingPdfWoman);
+			if (flagCero == true) {
+				nameComplete = userDetailsWoman.getName() + " " + userDetailsWoman.getLastName() + " "
+						+ userDetailsWoman.getLastNameMaternal();
+				UserOfferingPdfDTO userOfferingPdfWoman = new UserOfferingPdfDTO(nameComplete, quantityEach);
+				womanPDF.add(userOfferingPdfWoman);
+			}
 		}
-		
-		//-----------------------Niños---------------------------------
+
+		// -----------------------Niños---------------------------------
 		List<UserDetails> userChildren = userDetailsService.getAllChildren();
 		List<UserOfferingPdfDTO> childrenPDF = new ArrayList<UserOfferingPdfDTO>();
 		for (UserDetails userDetailsChildren : userChildren) {
+			boolean flagCero = false;
 			List<Double> quantityEach = new ArrayList<Double>();
-			listOfferingDetilasByWeekAndUser = offeringDetailService.findByUserDetailsAndWeek(userDetailsChildren, week);
+			listOfferingDetilasByWeekAndUser = offeringDetailService.findByUserDetailsAndWeek(userDetailsChildren,
+					week);
 			for (OfferingDetails offeringDetailsChildren : listOfferingDetilasByWeekAndUser) {
+				if (offeringDetailsChildren.getQuantity() != 0.0) {
+					flagCero = true;
+				}
 				quantityEach.add(offeringDetailsChildren.getQuantity());
 			}
-			nameComplete = userDetailsChildren.getName() + " " + userDetailsChildren.getLastName() + " " + userDetailsChildren.getLastNameMaternal();
-			UserOfferingPdfDTO userOfferingPdfChildren = new UserOfferingPdfDTO(nameComplete, quantityEach);
-			childrenPDF.add(userOfferingPdfChildren);
+			if (flagCero == true) {
+				nameComplete = userDetailsChildren.getName() + " " + userDetailsChildren.getLastName() + " "
+						+ userDetailsChildren.getLastNameMaternal();
+				UserOfferingPdfDTO userOfferingPdfChildren = new UserOfferingPdfDTO(nameComplete, quantityEach);
+				childrenPDF.add(userOfferingPdfChildren);
+			}
 		}
-		
-//		for (UserOfferingPdfDTO hombres : mensPDF) {
-//			LOG.debug("NOMBRE COMPLETO DEL HOMBRE ENCONTRADO ----- " + hombres.getName());
-//		}
-//		LOG.debug("COLUMNAS ------------------------------- " + cantRow);
-		
-		
+
+		// //----------------------- Anónimo -------------------------------
+		// List<UserOfferingPdfDTO> anonimoPDF = new
+		// ArrayList<UserOfferingPdfDTO>();
+		// List<Double> quantityAnonimoEach = new ArrayList<Double>();
+		// listOfferingDetilasByWeekAndUser =
+		// offeringDetailService.findByUserDetailsAndWeek(userDetailsService.findOne(2),
+		// week);
+		// for (OfferingDetails offeringDetailsAnonimo :
+		// listOfferingDetilasByWeekAndUser) {
+		// quantityEach.add(offeringDetailsChildren.getQuantity());
+		// }
+		// for (UserOfferingPdfDTO hombres : mensPDF) {
+		// LOG.debug("NOMBRE COMPLETO DEL HOMBRE ENCONTRADO ----- " +
+		// hombres.getName());
+		// }
+		// LOG.debug("COLUMNAS ------------------------------- " + cantRow);
+		double cantTotal = offeringDetailService.getTotalOffering(week);
+
 		isComplete = true;
 
 		output.put("countColumns", cantRow);
@@ -294,8 +334,9 @@ public class OfferingDetailsController {
 		output.put("childrenPDF", childrenPDF);
 		output.put("isComplete", isComplete);
 		output.put("offerings", listOfferings);
+		output.put("cantTotal", cantTotal);
 
 		return output;
 	}
-	
+
 }

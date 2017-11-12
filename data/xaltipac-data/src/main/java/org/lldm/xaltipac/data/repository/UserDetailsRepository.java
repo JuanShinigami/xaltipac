@@ -13,10 +13,10 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserDetailsRepository extends PagingAndSortingRepository<UserDetails, Integer> {
 	
-	@Query("FROM UserDetails u WHERE u.deleted = 0")
+	@Query("FROM UserDetails u WHERE u.deleted = 0 AND u.id != 1")
 	public Page<UserDetails> getAllActiveUsers(Pageable pageable);
 	
-	@Query("FROM UserDetails u WHERE u.deleted = 0")
+	@Query("FROM UserDetails u WHERE u.deleted = 0 AND u.id != 1")
 	public List<UserDetails> getAllUsersActive();
 	
 	public UserDetails findByUser(User user);

@@ -3,7 +3,6 @@
  */
 package org.lldm.xaltipac.web;
 
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
+import org.lldm.xaltipac.data.model.OfferingDetails;
 import org.lldm.xaltipac.data.model.Week;
 import org.lldm.xaltipac.service.OfferingDetailService;
 import org.lldm.xaltipac.service.OfferingService;
@@ -61,9 +61,8 @@ public class WeekController {
 	@RequestMapping(value = "", method = RequestMethod.GET)
 	public String listWeeks(Model model, HttpServletRequest request) {
 
-		
 		logUtil.logHistory(LOG, "/week/", ActionsEnum.VIEW, request.getRemoteAddr(), "");
-		
+
 		List<Week> weekList = weekService.getAllWeek();
 
 		for (Week week : weekList) {
@@ -87,94 +86,94 @@ public class WeekController {
 		model.addAttribute("weekForm", weekForm);
 		return WEEK_CREATE;
 	}
-	
+
 	@Transactional
-    @PreAuthorize("hasRole('addWeek')")
-    @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public String newWeekPost(@Valid WeekForm weekForm,
-            BindingResult result, Model model, HttpServletRequest request) {
+	@PreAuthorize("hasRole('addWeek')")
+	@RequestMapping(value = "/add", method = RequestMethod.POST)
+	public String newWeekPost(@Valid WeekForm weekForm, BindingResult result, Model model, HttpServletRequest request) {
 
-        logUtil.logHistory(LOG, "/week/add", ActionsEnum.ADD,
-                request.getRemoteAddr(), weekForm.toString());
+		logUtil.logHistory(LOG, "/week/add", ActionsEnum.ADD, request.getRemoteAddr(), weekForm.toString());
 
-        if (result.hasErrors()) {
-            return WEEK_CREATE;
-        }
+		if (result.hasErrors()) {
+			return WEEK_CREATE;
+		}
 
-        Week weekExist = weekService.findByDay(weekForm.getDay());
-        
+		Week weekExist = weekService.findByDay(weekForm.getDay());
 
-        if (weekExist != null) {
-            result.addError(new ObjectError("exist",
-                    "No se puede dar de alta una fecha que ya existe."));
-            return WEEK_CREATE;
-        }
-        
-        Week week = new Week();
-        week.setDay(weekForm.getDay());
-        week.setTotal(0.0);
-        week.setEnabled(1);
-        week.setNotes(weekForm.getNotes());
-        
-        weekService.save(week);
+		if (weekExist != null) {
+			result.addError(new ObjectError("exist", "No se puede dar de alta una fecha que ya existe."));
+			return WEEK_CREATE;
+		}
 
-        offeringDetailService.saveManyOfferginDetails(week, weekForm.getOfferingDetilsOfferingList());
-//        WeekForm weekClean = new WeekForm(offeringService.getAllOfferings());
-//        model.addAttribute("weekForm", weekClean);
+		Week week = new Week();
+		week.setDay(weekForm.getDay());
+		week.setTotal(0.0);
+		week.setEnabled(1);
+		week.setNotes(weekForm.getNotes());
 
+		weekService.save(week);
 
-        model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");
+		offeringDetailService.saveManyOfferginDetails(week, weekForm.getOfferingDetilsOfferingList());
+		// WeekForm weekClean = new WeekForm(offeringService.getAllOfferings());
+		// model.addAttribute("weekForm", weekClean);
 
-        return listWeeks(model, request);
+		model.addAttribute("ESTATUS", "Los datos se guardaron correctamente.");
 
-    }
-	
+		return listWeeks(model, request);
+
+	}
+
+	@Transactional
 	@PreAuthorize("hasRole('editWeek')")
 	@RequestMapping(value = "/editView", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody Map<String, Object> editWeek(@RequestParam Map<String, String> requestParams,
 			HttpServletRequest request) {
-		
-		Map<String, Object> output = new HashMap<String, Object>();
-		
-		String id = requestParams.get("id");
-		
-		boolean flagExist = false;
-		Week week = null;
-		
-		if(id != ""){
-			week = weekService.findOne(Integer.parseInt(id));
-		}
-		
-		output.put("wwek", week);
-		output.put("flagExist", flagExist);
 
-		return output;
-	}
-	
-	@PreAuthorize("hasRole('editWeek')")
-	@RequestMapping(value = "/editViewSave", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody Map<String, Object> editWeekPost(@RequestParam Map<String, String> requestParams,
-			HttpServletRequest request) {
-		
 		Map<String, Object> output = new HashMap<String, Object>();
-		
-		String id = requestParams.get("id");
-		
-		boolean flagExist = false;
+
+		String day = requestParams.get("day-week");
+		String id = requestParams.get("id-week");
+
+		LOG.debug("SEMANA ------------------------ " + day);
+		// boolean flagExist = false;
 		boolean flagSave = false;
 		Week week = null;
-		
-		if(id != ""){
+		//
+		if (id != "") {
 			week = weekService.findOne(Integer.parseInt(id));
-			//week.setDay();
+			week.setDay(day);
 			weekService.save(week);
+			flagSave = true;
 		}
-		
-		output.put("wwek", week);
-		output.put("flagExist", flagExist);
+		//
+		// output.put("wwek", week);
 		output.put("flagSave", flagSave);
 
 		return output;
+	}
+
+	@Transactional
+	@PreAuthorize("hasRole('deleteWeek')")
+	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	public String deleteWeek(@RequestParam int idWeek, Model model, HttpServletRequest request) {
+
+		Week week = weekService.findOne(idWeek);
+
+		if (week == null) {
+			model.addAttribute("ESTATUS", "Semana no existente");
+			return listWeeks(model, request);
+		}
+
+		List<OfferingDetails> deleteOfferingDetails = offeringDetailService.findByWeek(week);
+		for (OfferingDetails offeringDetails : deleteOfferingDetails) {
+			offeringDetailService.delete(offeringDetails);
+		}
+
+		weekService.delete(week);
+		// groupService.delete(group);
+		model.addAttribute("ESTATUS", "La semana " + week.getDay() + " se eliminó correctamente.");
+
+		return listWeeks(model, request);
 	}
 
 }

@@ -37,5 +37,17 @@ public class ProfileServiceImpl extends BaseServiceImpl<Profile, Integer> implem
 	public Profile findByName(String name) {
 		return profileRepository.findByName(name);
 	}
+
+
+	@Override
+	public List<Profile> getProfileForEncargado() {
+		return profileRepository.getProfileForEncargado();
+	}
+
+
+	@Override
+	public List<Profile> getProfileForFinanzas() {
+		return profileRepository.getProfileForFinanzas();
+	}
 	
 }

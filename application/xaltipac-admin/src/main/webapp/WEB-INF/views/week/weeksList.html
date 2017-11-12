@@ -77,19 +77,19 @@
 							<i class="fa fa-trash"></i>
 						</button>
 						<button type="button" th:if="${week.enabled == 1}"
-							title="Registrar ofrendas" class="btn btn-warning"
+							sec:authorize="hasRole('editWeek')" title="Registrar ofrendas" class="btn btn-warning"
 							data-toggle="tooltip" data-placement="right"
 							th:onclick="'registerOfferings(\''+${week.day}+'\')'">
 							<i class="fa fa-pencil-square-o"></i>
 						</button>
 						<button type="button" th:if="${week.enabled == 1}"
-							title="Cerrar Semana" class="btn btn-success"
+							sec:authorize="hasRole('editWeek')" title="Cerrar Semana" class="btn btn-success"
 							data-toggle="tooltip" data-placement="right"
 							th:onclick="'showModalCloseWeek(\''+${week.id}+'\')'">
 							<i class="fa fa-window-close"></i>
 						</button>
 						<button type="button" th:if="${week.enabled == 0}"
-							title="Generar reporte semanal" class="btn btn-dark"
+							sec:authorize="hasRole('generedReport')" title="Generar reporte semanal" class="btn btn-dark"
 							data-toggle="tooltip" data-placement="right"
 							th:onclick="'generetedPDF(\''+${week.id}+'\')'">
 							<i class="fa fa-file-pdf-o"></i>
@@ -109,7 +109,7 @@
 									</div>
 									<div class="modal-body">
 										<p
-											th:text="'¿Estás seguro de que deseas eliminar la semana de ofrenda del día ' + ${week.day} + '?'"></p>
+											th:text="'¿Estás seguro de que deseas eliminar la semana de ofrenda del día ' + ${week.day} + '? Perderá toda infrmación de esta semana.'"></p>
 									</div>
 									<div class="modal-footer">
 
@@ -199,8 +199,8 @@
 					<div class="modal-body">
 
 						<small>(*) Lo campos requeridos.</small> <br /> <br />
-						<form id="add-group-form" action="" method="post"
-							th:action="@{/groups/add}">
+						<form id="edit-save-week-form" action="" method="post"
+							th:action="@{/week/editView}">
 							<input type="hidden" name="id-week" id="id-week" />
 							<div class="form-group">
 								<label for="name">(*) Fecha:</label> <input class="form-control"
@@ -211,7 +211,7 @@
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-						<a href="javascript:{}" onclick="javascript:addGroup();"
+						<a href="javascript:{}" onclick="javascript:editWeekSave();"
 							id="cat-save" class="btn btn-primary">Guardar</a>
 						<!-- 					<button type="button" class="btn btn-primary">Guardar</button> -->
 					</div>
