@@ -57,8 +57,9 @@
 							class="fa fa-fw fa-usd"></i> <span class="nav-link-text">Ofrendas</span>
 					</a>
 						<ul class="sidenav-second-level collapse" id="collapseMulti">
-							<li sec:authorize="hasRole('showOfferings')" title="Dashboard"><a href="../offering/" th:href="@{/offering}">Tipos de Ofrendas</a></li>
-							<li sec:authorize="hasRole('showWeeks')" title="Dashboard"><a href="../week/" th:href="@{/week}">Ofenda semanal</a></li>
+							<li sec:authorize="hasRole('showOfferings')" title="Tipo de ofrendas"><a href="../offering/" th:href="@{/offering}">Tipos de Ofrendas</a></li>
+							<li sec:authorize="hasRole('showWeeks')" title="Ofrendas semanal"><a href="../week/" th:href="@{/week}">Ofenda semanal</a></li>
+							<li sec:authorize="hasRole('showMonthOffering')" title="Reporte Mensual"><a href="../offering/month" th:href="@{/offering/month}">Reporte Mensual</a></li>
 						</ul></li>
 				</ul>
 				<ul class="navbar-nav sidenav-toggler">

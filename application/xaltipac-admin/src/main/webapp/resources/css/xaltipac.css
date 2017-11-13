@@ -40,3 +40,12 @@
 	display: none;
 	width: 720px;
 }
+
+.marginDiv{
+	border: 1px solid #000;
+}
+
+.ima-pdf-header{
+	width: 40px;
+	height: 40px;
+}

@@ -6,10 +6,8 @@
 
 
 <head th:replace="fragments/headTag :: headTag">
-
-
-
 </head>
+
 
 <script src="../../../resources/js/week/week.js"
 	th:src="@{/resources/js/week/week.js}"></script>
@@ -77,19 +75,22 @@
 							<i class="fa fa-trash"></i>
 						</button>
 						<button type="button" th:if="${week.enabled == 1}"
-							sec:authorize="hasRole('editWeek')" title="Registrar ofrendas" class="btn btn-warning"
-							data-toggle="tooltip" data-placement="right"
+							sec:authorize="hasRole('editWeek')" title="Registrar ofrendas"
+							class="btn btn-warning" data-toggle="tooltip"
+							data-placement="right"
 							th:onclick="'registerOfferings(\''+${week.day}+'\')'">
 							<i class="fa fa-pencil-square-o"></i>
 						</button>
 						<button type="button" th:if="${week.enabled == 1}"
-							sec:authorize="hasRole('editWeek')" title="Cerrar Semana" class="btn btn-success"
-							data-toggle="tooltip" data-placement="right"
+							sec:authorize="hasRole('editWeek')" title="Cerrar Semana"
+							class="btn btn-success" data-toggle="tooltip"
+							data-placement="right"
 							th:onclick="'showModalCloseWeek(\''+${week.id}+'\')'">
 							<i class="fa fa-window-close"></i>
 						</button>
 						<button type="button" th:if="${week.enabled == 0}"
-							sec:authorize="hasRole('generedReport')" title="Generar reporte semanal" class="btn btn-dark"
+							sec:authorize="hasRole('generedReport')"
+							title="Generar reporte semanal" class="btn btn-dark"
 							data-toggle="tooltip" data-placement="right"
 							th:onclick="'generetedPDF(\''+${week.id}+'\')'">
 							<i class="fa fa-file-pdf-o"></i>
